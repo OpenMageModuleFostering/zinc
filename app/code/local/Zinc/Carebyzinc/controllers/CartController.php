@@ -50,13 +50,18 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
             $carebyzinc = $product->getCarebyzinc();
             $isProduct = isset($params['isProduct']) && (int)$params['isProduct'] == 1 ? true : false;
             
-            if($carebyzinc == '1' && $isProduct) {
+            $interstitial = Mage::getStoreConfig('carebyzinc/display/interstitial');
+            
+            if($carebyzinc == '1' && $isProduct && $interstitial == '1') {
                 if(!isset($params['carebyzinc_option'])) {
                     $cbzCategory = $product->getCarebyzincCategory();
 
                     if($carebyzinc == '1' && !empty($cbzCategory)) {
                         $model = Mage::getModel('carebyzinc/order');
+                        $price = $model->getInterstitalPrice($product);
                         $result = $model->prepareInterstitials($cbzCategory);
+                        $result['real_price'] = $price;
+                        $result['qty'] = $params['qty'];
                         $sess = Mage::getSingleton("core/session",  array("name"=>"frontend"));
                         $sess->setData('interstitials', $result);
 
@@ -166,6 +171,7 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
             if($response) {
                 switch($response['action']) {
                     case 'cancel':
+                        $params['qty'] = (int)$post['qty'];
                         $cart->addProduct($product, $params);
                         if (!empty($related)) {
                             $cart->addProductsByIds(explode(',', $related));
@@ -218,11 +224,11 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
 			$product = Mage::getModel('catalog/product')->load($quoteItem->getProductId()); 
 			$productType = $product->getTypeId();
 			$flag = 0;
-			if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1))
-			{
+			if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1)) {
 				$qty = 1;
 				$flag = 1;
 			}           
+            
             if($product->getId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')){
 				$flag = 0;	
 				if($qty >1){
@@ -230,10 +236,11 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
 					$qty = 1;
 				}
 			}
+            
             if (isset($params['qty'])) {
-				if($flag){
+				if($flag) {
 					$qty = $params['qty'];
-					if($qty >1)
+					if($qty > 1)
 						$params['qty'] = 1;
 				}
                 $filter = new Zend_Filter_LocalizedToNormalized(
@@ -244,15 +251,15 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
 			
             $item = $cart->updateItem($id, new Varien_Object($params));
             
-            if($flag){ 
-				if($qty >1){
+            if($flag) { 
+				if($qty >1) {
 					$quote = Mage::getSingleton('checkout/session')->getQuote();
-					for($i = 1;$i<=($qty-1);$i++){						
-						$result = $quote->addProduct($product, $item->getBuyRequest());	
-						$result = ( $result->getParentItem() ? $result->getParentItem() : $result );						         
+					for($i=0; $i<($qty-1); $i++) {						
+						$result = $quote->addProduct($product, $item->getBuyRequest());
+						$result = ($result->getParentItem() ? $result->getParentItem() : $result);
+                        $quote->save();
 					}
-				}
-					     
+				}	     
 			}
 			
             if (is_string($item)) {
@@ -312,6 +319,7 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
     {
         try {
             $cartData = $this->getRequest()->getParam('cart');
+            
             if (is_array($cartData)) {
                 $filter = new Zend_Filter_LocalizedToNormalized(
                     array('locale' => Mage::app()->getLocale()->getLocaleCode())
@@ -320,52 +328,53 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
                 foreach ($cartData as $index => $data) {
 					$quote = Mage::getSingleton('checkout/session')->getQuote();
 					$oldQuoteItem = $quote->getItemById($index);
-					$flag = 0;
-					if($oldQuoteItem){
-					$product = Mage::getModel('catalog/product')
-								->setStoreId(Mage::app()->getStore()->getId())
-								->load($oldQuoteItem->getProductId());
-					$productType = $product->getTypeId();
-					if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1))
-					{						
-						$qty = 1;
-						$flag = 1;						
-					}	
-					
-                    if (isset($data['qty'])) {
-						if($flag){
-							$qty = $data['qty'];
-							if($qty >1)
-								$data['qty'] = 1;
-						}
-						if($product->getId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')){
-							$flag = 0;	
-							if($data['qty'] >1){
-								$data['qty'] = 1;
-								$qty = 1;
-							}
-						}
-                        $cartData[$index]['qty'] = $filter->filter(trim($data['qty']));
-                    }
                     
-                    if($flag){
-						if($qty >1){
-							for($i = 1;$i<=($qty-1);$i++){
-								
-								$result = $quote->addProduct($product, $oldQuoteItem->getBuyRequest());	
-								$result = ( $result->getParentItem() ? $result->getParentItem() : $result );								             
-							}
-						}
-					}
-                }}
+					$flag = 0;
+					if($oldQuoteItem) {
+                        $product = Mage::getModel('catalog/product')
+                            ->setStoreId(Mage::app()->getStore()->getId())
+                            ->load($oldQuoteItem->getProductId());
+                        $productType = $product->getTypeId();
 
-                if (! $cart->getCustomerSession()->getCustomer()->getId() && $cart->getQuote()->getCustomerId()) {
-                    $cart->getQuote()->setCustomerId(null);
+                        if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1)) {						
+                            $qty = 1;
+                            $flag = 1;						
+                        }
+
+                        if (isset($data['qty'])) {
+                            if($flag){
+                                $qty = $data['qty'];
+                                if($qty >1)
+                                    $data['qty'] = 1;
+                            }
+                            if($product->getId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')){
+                                $flag = 0;	
+                                if($data['qty'] >1){
+                                    $data['qty'] = 1;
+                                    $qty = 1;
+                                }
+                            }
+                            $cartData[$index]['qty'] = $filter->filter(trim($data['qty']));
+                        }
+
+                        if($flag) {
+                            if($qty > 1) {
+                                for($i=0; $i<($qty-1); $i++) {
+                                    $result = $quote->addProduct($product, $oldQuoteItem->getBuyRequest());	
+                                    $result = ($result->getParentItem() ? $result->getParentItem() : $result);
+                                    $quote->save();
+                                }
+                            }
+                        }
+                    }
                 }
 
+                if (!$cart->getCustomerSession()->getCustomer()->getId() && $cart->getQuote()->getCustomerId()) {
+                    $cart->getQuote()->setCustomerId(null);
+                }
+                
                 $cartData = $cart->suggestItemsQty($cartData);
-                $cart->updateItems($cartData)
-                    ->save();
+                $cart->updateItems($cartData)->save();
             }
             $this->_getSession()->setCartWasUpdated(true);
         } catch (Mage_Core_Exception $e) {

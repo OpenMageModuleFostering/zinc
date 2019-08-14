@@ -263,6 +263,30 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
     }
     
     /**
+     * 
+     * @param object $product - product object
+     * @return string $result - interstital price
+     */
+    public function getInterstitalPrice($product)
+    {
+        $result = false;
+        
+        $model = Mage::getModel('carebyzinc/carebyzinc');
+        
+        $helper = Mage::helper('carebyzinc');
+        $zip = $helper->getZipCode();
+        
+        $price = $model->getPriceQuote($product, $zip, false, 'INTERSTICIAL');
+        if(is_array($price) && $price['code'] == '200') {
+            foreach($price['price'] as $val) {
+                $result = '$' . $val['price_per_year'];
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
      * Import historical orders from admin panel
      * 
      * @return array $result - success / failure

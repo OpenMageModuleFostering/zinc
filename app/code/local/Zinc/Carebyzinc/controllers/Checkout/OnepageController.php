@@ -30,12 +30,15 @@ class Zinc_Carebyzinc_Checkout_OnepageController extends Mage_Checkout_OnepageCo
             return;
         }
         
-        $model = Mage::getModel('carebyzinc/order');
-        $quote = Mage::getModel('sales/quote')->load($lastQuoteId);
-        $order = Mage::getModel('sales/order')->load($lastOrderId);
-        
-        $success = $model->prepareSuccessPage($quote, $order);
-        Mage::register('zincSuccess', $success);
+        $thankyou = Mage::getStoreConfig('carebyzinc/display/thankyou');
+        if($thankyou == '1') {
+            $model = Mage::getModel('carebyzinc/order');
+            $quote = Mage::getModel('sales/quote')->load($lastQuoteId);
+            $order = Mage::getModel('sales/order')->load($lastOrderId);
+
+            $success = $model->prepareSuccessPage($quote, $order);
+            Mage::register('zincSuccess', $success);
+        }
         
         $session->clear();
         $this->loadLayout();

@@ -17,7 +17,3 @@ $productId = $product->getId();
 Mage::getConfig()->saveConfig('carebyzinc/general/warranty_product', $product->getId(), 'default', 0);
           																						
 $installer->endSetup();
-
-
-																	
-

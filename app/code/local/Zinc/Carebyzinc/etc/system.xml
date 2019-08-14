@@ -222,6 +222,24 @@
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_Yesno</source_model>  
                         </quotecart>
+                        <interstitial>
+                            <label>Interstitial Popup</label>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_Yesno</source_model>
+                        </interstitial>
+                        <thankyou>
+                            <label>Thank You Page</label>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_Yesno</source_model>
+                        </thankyou>
                     </fields>
                 </display>
 <!--                

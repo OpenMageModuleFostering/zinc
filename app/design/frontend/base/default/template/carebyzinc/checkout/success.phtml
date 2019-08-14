@@ -24,7 +24,9 @@
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
-$zincSuccess = Mage::registry('zincSuccess');
+$helper = Mage::helper('carebyzinc');
+$thankYou = $helper->checkThankYouVisibility();
+$zincSuccess = $thankYou == '1' ? Mage::registry('zincSuccess') : false;
 
 ?>
 <div class="page-title">
@@ -66,6 +68,7 @@ $zincSuccess = Mage::registry('zincSuccess');
     <button type="button" class="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue Shopping')) ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
 </div>
 
+<?php if($thankYou == '1') : ?>
 <?php if($zincSuccess['code'] == '200' && isset($zincSuccess['url']) && $zincSuccess['url'] != '') : ?>
 <script>
     //<![CDATA[
@@ -81,5 +84,6 @@ $zincSuccess = Mage::registry('zincSuccess');
     });
     //]]> 
 </script>
+<?php endif; ?>
 <?php endif; ?>
 

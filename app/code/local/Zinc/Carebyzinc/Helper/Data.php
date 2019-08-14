@@ -71,5 +71,32 @@ class Zinc_Carebyzinc_Helper_Data extends Mage_Core_Helper_Abstract
         
         return $result;
     }
-
+    
+    /**
+     * Check interstital visability on frontend (product details page) 
+     * 
+     * @return boolean $result 
+     */
+    public function checkInterstitalVisibility()
+    {
+        $result = false;
+        
+        $result = Mage::getStoreConfig('carebyzinc/display/interstitial');
+        
+        return $result;
+    }
+    
+    /**
+     * Check thank you popup visability on frontend (after successful order) 
+     * 
+     * @return boolean $result 
+     */
+    public function checkThankYouVisibility()
+    {
+        $result = false;
+        
+        $result = Mage::getStoreConfig('carebyzinc/display/thankyou');
+        
+        return $result;
+    }
 }

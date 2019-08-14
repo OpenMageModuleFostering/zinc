@@ -23,12 +23,13 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart {
         $flag = 0;
         $qty = 0;
         $productType = $product->getTypeId();
-        
+
         if (($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1)) {
             $flag = 1;
             $qty = $request->getQty() ? $request->getQty() : 1;
             $request['qty'] = 1;
         }
+        
         if ($product->getStockItem()) {
             $minimumQty = $product->getStockItem()->getMinSaleQty();
             //If product was not found in cart and there is set minimal qty for it
@@ -37,12 +38,11 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart {
                 $request->setQty($minimumQty);
             }
         }
+        
         if ($flag) {
-
             if ($productId) {
                 try {
-                    for ($i = 0; $i < $qty; $i++) {
-
+                    for ($i=0; $i<$qty; $i++) {
                         $additionalOptions = array();
                         $product = Mage::getModel('catalog/product')
                                 ->setStoreId(Mage::app()->getStore()->getId())
@@ -55,8 +55,8 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart {
                             $carebyzincId = $request->getCarebyzincOption();
                             $priceQuote = Mage::getSingleton('core/session')->getCareQuote();
                             $carebyzincAry = $priceQuote[$carebyzincId];
+                            
                             if (!empty($carebyzincAry)) {
-
                                 $productPrice = $result->getProduct()->getFinalPrice();
                                 if ($carebyzincId) {
                                     $result->setCarebyzincVariantid($carebyzincId);
@@ -66,11 +66,12 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart {
 
                                         $this->getQuote()->save();
                                         $careParentId = $result->getId();
-                                        
+
                                         $warrantyProduct = Mage::getModel('catalog/product')->load($warrantPrdctId);
                                         $productPrice = $warrantyProduct->getPrice();
-                                        if ($price = $carebyzincAry['price_per_year'])
+                                        if ($price = $carebyzincAry['price_per_year']) {
                                             $newPrice = $productPrice + $price;
+                                        }
                                         $resultItem = $this->getQuote()->addProduct($warrantyProduct, $req);
                                         $resultItem->setCustomPrice($newPrice);
                                         $resultItem->setOriginalCustomPrice($newPrice);

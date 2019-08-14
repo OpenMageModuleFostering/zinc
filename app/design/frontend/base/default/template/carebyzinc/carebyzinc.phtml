@@ -12,6 +12,7 @@ $helper = Mage::helper('carebyzinc');
 
 $session = Mage::getSingleton("core/session",  array("name"=>"frontend"));
 $interstitials = $session->getData('interstitials');
+$iVisability = $helper->checkInterstitalVisibility();
 
 if (($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1) && ($helper->checkQuoteVisibility('product'))):
     $zip = $helper->getZipCode();
@@ -22,11 +23,13 @@ if (($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productTyp
         <div id="carebyzincCnt"></div>
         <input type="hidden" name="isProduct" value="1" />
     </div>
+<?php if($iVisability) : ?>
 <?php if($interstitials && isset($interstitials['html'])) : ?>
     <div id="interstitials" style="display: none;">
         <link rel="stylesheet" type="text/css" href="<?php echo $interstitials['stylesheet']; ?>" />
         <?php echo $interstitials['html']; ?>
     </div>
+<?php endif; ?>
 <?php endif; ?>
     <script>
         //<![CDATA[
@@ -108,7 +111,8 @@ if (($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productTyp
 
         //]]>	 
     </script>
-    
+
+<?php if($iVisability) : ?>
 <?php if($interstitials && isset($interstitials['html'])) : ?>
     <script>
         //<![CDATA[
@@ -132,6 +136,10 @@ if (($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productTyp
                     jQuery('#interstitials').show();
                 }
             });
+            
+            jQuery('span.ZincInterstitial-productInfoPrice').html('<?php echo $interstitials['real_price']; ?>');
+            jQuery('input#qty').attr('value', '<?php echo $interstitials['qty'] ?>');
+            qty
         });
         
         jQuery('#ZincInterstitial-cancel').click(function() {
@@ -139,7 +147,7 @@ if (($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productTyp
             var url = '<?php echo $this->getUrl("checkout/cart/ajaxprocessitem") ?>';
             new Ajax.Request(url, {
                 method: 'post',
-                parameters: {pId: <?php echo Mage::registry('current_product')->getId(); ?>, action: 'cancel'},
+                parameters: {pId: <?php echo Mage::registry('current_product')->getId(); ?>, action: 'cancel', qty: <?php echo $interstitials['qty']; ?>},
                 onComplete: function (transport) {
                     var content = JSON.parse(transport.responseText);
                     if(content != false) {
@@ -163,5 +171,6 @@ if (($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productTyp
        });
         //]]> 
     </script>
+<?php endif; ?>
 <?php endif; ?>
 <?php endif; ?>

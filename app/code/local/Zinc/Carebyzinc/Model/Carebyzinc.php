@@ -40,10 +40,11 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
      * @param object $product
      * @param string $zip
      * @param string $optionPrice
+     * @param string $source
      * 
      * @return mixed $result - price quoite / error message
      */
-    public function getPriceQuote($product, $zip, $optionPrice)
+    public function getPriceQuote($product, $zip, $optionPrice, $source = self::QUOTE_ADDITIONAL_PARAMS_SOURCE_PRODUCT)
     {
         $result = false;
         
@@ -68,7 +69,7 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
         );
         
         $data['additional_params'] = array(
-            'source' => self::QUOTE_ADDITIONAL_PARAMS_SOURCE_PRODUCT
+            'source' => $source
         );
         
         $catArray = array('bicycle', 'electronics');
