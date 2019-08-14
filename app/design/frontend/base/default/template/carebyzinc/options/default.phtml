@@ -1,0 +1,39 @@
+<?php $quoteData = $this->getQuoteData();?>
+<?php if(! empty($quoteData)): ?>
+<?php if( is_array($quoteData)): ?>
+<ul class="product-list">
+  <?php foreach($quoteData as $item): ?>
+      <li>
+          <div class="bx-l">
+              <div class="squared input">
+                  <input type="radio" value="<?php echo $item['id']; ?>" id="carebyzinc_<?php echo $item['id']; ?>" name="carebyzinc_option" />
+                  <label for="carebyzinc_<?php echo $item['id']; ?>"></label>
+              </div>
+          </div>
+          <div class="bx-r">
+              <h2 class="p-price"><?php echo Mage::helper('core')->currency($item['price_per_year']); ?></h2>
+              <h3 class="p-name quotelabel"><?php echo $item['description']; ?></h3>
+          </div>
+      </li>
+  <?php endforeach; ?>
+</ul>
+
+<script>
+jQuery.noConflict();
+  jQuery(document).ready(function() {
+    jQuery("a", ".quotelabel").click(
+      function(event) {
+        event.preventDefault();
+        var elementURL = jQuery(this).attr("href");
+        jQuery.colorbox({iframe: true, href: elementURL, innerWidth: 645,fastIframe: false, innerHeight: 509,width:"70%"});
+      });
+  });
+</script>
+<?php else:
+echo $quoteData;
+?>
+<?php endif; ?>
+<?php else:
+echo 'No quotes available';
+?>
+<?php endif; ?>

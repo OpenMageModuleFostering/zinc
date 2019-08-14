@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Zinc_Carebyzinc>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Zinc_Carebyzinc>
+    </modules>
+</config> 

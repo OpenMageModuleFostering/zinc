@@ -1,0 +1,18 @@
+<?php
+/**
+*/
+?><script type="text/javascript">
+    //<![CDATA[
+    function validate() {
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>', {
+            method:     'get',
+            onSuccess: function(transport){
+    		data = transport.responseText;
+                alert(data)
+            }
+        });
+    }
+    //]]>
+</script>
+ 
+<?php echo $this->getButtonHtml() ?>

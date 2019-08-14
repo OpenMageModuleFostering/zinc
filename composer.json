@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/zinc",
+    "type": "magento-module",
+    "license": "OSL-3.0",
+    "homepage": "",
+    "description": "Zinc is an application to allow merchants cross sell warranties and product protections online without ever have to worry about the technology and contract work behind them.",
+    "authors": [
+    {
+        "name": "ZincPlatform",
+        "email": "sam.li@zincplatform.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}
