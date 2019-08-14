@@ -16,7 +16,8 @@ class Zinc_Carebyzinc_Helper_Data extends Mage_Core_Helper_Abstract
        	    $zip = '';	
 	    if(Mage::getSingleton('customer/session')->isLoggedIn()){
 		    $primaryAddress = Mage::getSingleton('customer/session')->getCustomer()->getPrimaryShippingAddress();
-		    if($primaryAddress->getPostcode()){				
+		   if($primaryAddress){
+		    if($primaryAddress->getPostcode())				
 				$zip = $primaryAddress->getPostcode();				
 		    }
 	     }

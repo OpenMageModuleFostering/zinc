@@ -119,15 +119,31 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 			$path = Mage::getStoreConfig('carebyzinc/api/url');
 		else
 			$path = Mage::getStoreConfig('carebyzinc/api/test_url');
-			
-		$url = $path.'/'.$action;
+		if(Mage::getStoreConfig('carebyzinc/api/protocol') == 'https')
+			$protocol = 'https://'	;
+		else
+			$protocol = 'http://'	;
+		$url = $protocol.$path.'/'.$action;
 		return $url;
 	}
 	
-	private function getUserId()
+	public function getUserId()
 	{
-		$userId = Mage::getStoreConfig('carebyzinc/api/user_id');
+		
+		if((Mage::getStoreConfig('carebyzinc/api/testmode')) == 'live')
+			$userId = Mage::getStoreConfig('carebyzinc/api/user_id');
+		else
+			$userId = Mage::getStoreConfig('carebyzinc/api/test_user_id');
 		return $userId;
+	}
+	public function getToken()
+	{
+		
+		if((Mage::getStoreConfig('carebyzinc/api/testmode')) == 'live')
+			$token = Mage::getStoreConfig('carebyzinc/api/xuser_token');
+		else
+			$token = Mage::getStoreConfig('carebyzinc/api/test_xuser_token');
+		return $token;
 	}
 	
 	public function callApi($data, $action, $method = 'post'){
@@ -135,9 +151,16 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 		$values = json_encode($data);
 		$url = $this->getApiUrl($action);
 		$uid =  $this->getUserId();
-		$token = Mage::getStoreConfig('carebyzinc/api/access_token');
-		$client = Mage::getStoreConfig('carebyzinc/api/client');
-		$header =  array( "Content-Type: application/json","uid:$uid","access-token:$token","client:$client","token-type:Bearer");
+		$token = $this->getToken();
+		$email = Mage::getStoreConfig('carebyzinc/api/xuser_email');
+		if(($action =='price_quotes/generate') || ($action == 'policies' ))
+			$header =  array( "Content-Type: application/json","uid:$uid","X-User-Token:$token","X-User-Email:$email","token-type:Bearer");
+		elseif($action == 'token')
+			$header =  array( "Content-Type: application/json","X-User-Token:$token","X-User-Email:$email","token-type:Bearer");
+
+		else
+			$header =  array( "Content-Type: application/json","uid:$uid","token-type:Bearer");
+		
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_URL, $url);
 		if($method == 'post'){
@@ -147,6 +170,7 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 		curl_setopt($ch, CURLOPT_HEADER ,FALSE); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER ,TRUE); 
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
 		$outData['response'] = curl_exec($ch);
 		$outData['code']     = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);

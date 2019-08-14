@@ -84,9 +84,7 @@
                     </th>
 
                     <th class="a-center cart-total-head" colspan="<?php echo $mergedCells; ?>">
-<!--                            <div class="cart-total-placeholder">-->
                             <?php echo $this->__('Subtotal') ?>
-<!--                            </div>-->
                     </th>
 
                     <th class="a-center" rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
@@ -192,9 +190,7 @@ function showCarebyzinc(pid,itemId){
 						  var content = JSON.parse(transport.responseText); 
 						  $(cntid).update(content);
 						  jQuery(loader).hide();	
-						 // var id = "#showCarebyzinc_"+itemId;
-						 // jQuery(id).hide();	
-						  //jQuery("#zipcode_"+itemId).hide();	  
+						 	  
 				}
 				  
 			});

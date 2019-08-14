@@ -119,7 +119,6 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart
 
 				Mage::dispatchEvent('checkout_cart_product_add_after', array('quote_item' => $result, 'product' => $product));
 				$this->getCheckoutSession()->setLastAddedProductId($productId);
-			//}Mage::getSingleton('core/session')->unsCareQuote();
 		}else{
 				if ($productId) {
 					try {

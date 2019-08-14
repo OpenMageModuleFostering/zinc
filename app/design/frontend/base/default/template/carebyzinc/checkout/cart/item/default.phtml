@@ -355,7 +355,8 @@ if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE) || ($productTy
 
   <?php $carebyzincAry = (array) unserialize($careByZinc); ?>
         <div class="product-cart-careby">
-           <a href="<?php echo $helper->getDeleteUrl($_item->getId()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Warranty')) ?>" class="remove_warranty"><?php //echo $this->__('Remove Warranty') ?></a>
+           <a href="<?php echo $helper->getDeleteUrl($_item->getId()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Warranty')) ?>" class="remove_warranty"><?php //echo $this->__('Remove Warranty') ?>
+           </a>
             <p class="care-price"><?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?></p>
             <p class="warranty_desc quotelabel"><?php echo $carebyzincAry['description'] ?></p>
         

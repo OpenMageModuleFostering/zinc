@@ -10,7 +10,6 @@ class Zinc_Carebyzinc_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtm
   
  public function setCollection($collection)
 	{
-		//$collection->addAttributeToSelect('carebyzinc');
 		$collection->addExpressionAttributeToSelect('carebyzinc','round({{carebyzinc}},0)','carebyzinc');		
 		parent::setCollection($collection);
 	}

@@ -19,12 +19,12 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Block_
 	public function setCollection($collection)
 	{
 	
-		//$collection->addAttributeToSelect('carebyzinc');
 		$collection->addFieldToFilter('price',array('gteq' => 500));
 		$collection->addAttributeToSelect('carebyzinc');
+		$collection->addAttributeToSelect('carebyzinc_category');
+		//$collection->addAttributeToSelect('carebyzinc_subcategory');
 		$collection->addExpressionAttributeToSelect('carebyzinc','round({{carebyzinc}},0)','carebyzinc');
-		parent::setCollection($collection);
-		
+		parent::setCollection($collection);		
 	}
   
    protected function _prepareColumns()
@@ -75,6 +75,18 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Block_
                 'type'  => 'options',
 		'options' => array('1' => 'Enable', '0' => 'Disable')
         ));
+        
+         $this->addColumn('carebyzinc_category',
+            array(
+                'header'=> Mage::helper('catalog')->__('Category'),
+                'index' => 'carebyzinc_category',
+        ));
+       /*  $this->addColumn('carebyzinc_subcategory',
+            array(
+                'header'=> Mage::helper('catalog')->__('Subcategory'),
+                'index' => 'carebyzinc_subcategory',
+        ));*/
+        
         $this->addColumn('action', array(
                 'header'    =>  Mage::helper('carebyzinc')->__('Action'),
                 'width'     => '100',

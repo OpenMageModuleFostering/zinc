@@ -9,12 +9,13 @@ class Zinc_Carebyzinc_Adminhtml_CarebyzincController extends Mage_Adminhtml_Cont
 {
  public function validateAction()
     {
-        $data['uid'] = Mage::getStoreConfig('carebyzinc/api/user_id');
-        $data['access-token'] = Mage::getStoreConfig('carebyzinc/api/access_token');
-        $data['client'] = Mage::getStoreConfig('carebyzinc/api/client');      
+   	$model = Mage::getModel('carebyzinc/carebyzinc');
+        $data['uid'] = $model->getUserId();
+        $data['X-User-Token'] =  $model->getToken();
+        $data['X-User-Email'] = Mage::getStoreConfig('carebyzinc/api/xuser_email');      
        
- 	$model = Mage::getModel('carebyzinc/carebyzinc');
-  	$result = $model->callApi($data,'auth/validate_token','get');
+ 	
+  	$result = $model->callApi($data,'token','post');
   	if($result['code'] == 200)
   		$response = 'Success';
   	else

@@ -28,9 +28,7 @@ class Zinc_Carebyzinc_IndexController extends Mage_Core_Controller_Front_Action
 	  $this->loadLayout();  
 	  $product = Mage::getModel('catalog/product')->load($product_id); 
 	  if(! empty($configOptionsArray)){
-	  	//$childProduct = Mage::getModel('catalog/product_type_configurable')->getProductByAttributes( $configOptionsArray, $product);
-	 	//$product = Mage::getModel('catalog/product')->load($childProduct->getId()); 
-	 	$attributes = $product->getTypeInstance(true)->getConfigurableAttributes($product);
+		$attributes = $product->getTypeInstance(true)->getConfigurableAttributes($product);
 		$priceVal = 0;
 		foreach ($attributes as $attribute){
 		    $prices = $attribute->getPrices();
@@ -89,7 +87,6 @@ class Zinc_Carebyzinc_IndexController extends Mage_Core_Controller_Front_Action
 			$item->getProduct()->setIsSuperMode(true);
 			if($price = $carebyzincItem['price_per_year']){
 				$product = Mage::getModel('catalog/product')->load($item->getProductId());
-				//$productPrice = $product->getFinalPrice();
 				$productPrice = $item->getProduct()->getFinalPrice();
 				$newPrice = $productPrice + $price;	
 				$item->setCarebyzincPrice($price);					

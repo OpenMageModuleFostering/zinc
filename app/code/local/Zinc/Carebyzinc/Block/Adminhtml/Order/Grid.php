@@ -52,15 +52,20 @@ class Zinc_Carebyzinc_Block_Adminhtml_Order_Grid extends Mage_Adminhtml_Block_Wi
           'align'     =>'left',
           'index'     => 'product_name',
       ));
+      $store = $this->_getStore();
       $this->addColumn('price', array(
           'header'    => Mage::helper('carebyzinc')->__('Price'),
           'align'     =>'left',
+          'type'      => 'price',
           'index'     => 'product_price',
+           'currency_code' => $store->getBaseCurrency()->getCode(),
       ));
       $this->addColumn('warrenty_price', array(
-          'header'    => Mage::helper('carebyzinc')->__('Warrenty Price'),
+          'header'    => Mage::helper('carebyzinc')->__('Premium'),
           'align'     =>'left',
+          'type'      => 'price',
           'index'     => 'warrenty_price',
+           'currency_code' => $store->getBaseCurrency()->getCode(),
       ));
 	  
 	 $this->addColumn('customer_name', array(
@@ -75,8 +80,16 @@ class Zinc_Carebyzinc_Block_Adminhtml_Order_Grid extends Mage_Adminhtml_Block_Wi
           'index'     => 'customer_email',
       ));
 
-	   $this->addColumn('carebyzinc_key', array(
-          'header'    => Mage::helper('carebyzinc')->__('Care by Zinc Key'),
+	$this->addColumn('order_created_mode', array(
+          'header'    => Mage::helper('carebyzinc')->__('Orders Made To'),
+          'align'     =>'left',
+          'index'     => 'order_created_mode',
+          'type'  => 'options',
+          'options' => Mage::getSingleton('carebyzinc/order')->getOptionArray(),
+      )); 
+      
+	$this->addColumn('carebyzinc_key', array(
+          'header'    => Mage::helper('carebyzinc')->__('Zinc Policy ID'),
           'align'     =>'right',
           'index'     => 'carebyzinc_key',
       ));
@@ -96,6 +109,11 @@ class Zinc_Carebyzinc_Block_Adminhtml_Order_Grid extends Mage_Adminhtml_Block_Wi
             return $this->getUrl('*/sales_order/view', array('order_id' => $row->getOrderId()));
         }
         return false;
+    }
+    protected function _getStore()
+    {
+        $storeId = (int) $this->getRequest()->getParam('store', 0);
+        return Mage::app()->getStore($storeId);
     }
 
 

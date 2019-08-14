@@ -24,7 +24,7 @@ $this->getConnection()
    
 $switch = new Mage_Core_Model_Config();
 
-$switch ->saveConfig('carebyzinc/general/carebytitle', "Care By Zinc", 'default', 0);
+$switch->saveConfig('carebyzinc/general/carebytitle', "Care by Zinc", 'default', 0);
   
    
    

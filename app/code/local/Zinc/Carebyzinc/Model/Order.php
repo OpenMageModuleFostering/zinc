@@ -7,6 +7,9 @@
  */ 
 class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 {
+
+    const PRODUCTION    = 1;
+    const SANDBOX   = 0;
     public function _construct()
     {
         parent::_construct();
@@ -20,12 +23,23 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 		$currencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
 		$data['user_id'] =  $this->getUserId();
 		$data['customer'] = $this->getUserAddress($order);
-		$carebyItem = 0;		
-		$orderItems = $order->getAllVisibleItems();	
-		$model = Mage::getModel('carebyzinc/carebyzinc');
+		$carebyItem = 0;$policyKeyArray = array();		
+		$orderItems = $order->getAllVisibleItems();
+		$fromname = Mage::getStoreConfig('trans_email/ident_general/name'); 
+		$fromemail = Mage::getStoreConfig('trans_email/ident_general/email');
+		$translate  = Mage::getSingleton('core/translate');
+		$email = 'support@zincplatform.com';
+		$name = 'Zinc';
+		$templateId = Mage::getStoreConfig('sales_email/order/template');	
+		
+		$model = Mage::getModel('carebyzinc/carebyzinc');		
+		if((Mage::getStoreConfig('carebyzinc/api/testmode')) == 'live')
+			$mode = 1;
+		else
+			$mode = 0;
 		foreach($orderItems as $item){
 			if($item->getCarebyzincOption()){
-				$carebyItem++;	
+				
 				$policyNo = '';			
 				$carebyzincAry = (array) unserialize($item->getCarebyzincOption()) ;
 				$product = Mage::getModel('catalog/product')->load($item->getProductId());				
@@ -36,7 +50,9 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 				if($result['code'] == 200){
 					$policyArray   = (array) json_decode($policyAry);				
 					$policyNo    =  $policyArray['policy_id'];
-				}		
+				}
+				$policyKeyArray[] = $policyNo; 
+				$carebyItem++;			
 				$careOrder = Mage::getModel('carebyzinc/order');
 				$careOrder->setOrderId($order->getId());
 				$careOrder->setProductId($item->getProductId());
@@ -54,7 +70,9 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 				$careOrder->setCustomerName($name);
 				$careOrder->setCustomerEmail($order->getCustomerEmail());
 				$careOrder->setCreatedTime(now());
+				$careOrder->setOrderCreatedMode($mode);
 				$careOrder->save();
+				
 			}			
 		}
 		if($carebyItem){
@@ -65,21 +83,22 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 			$name = 'Zinc';
 			$templateId = Mage::getStoreConfig('sales_email/order/template');
 			if($email){
-			        $storeObj = Mage::getModel('core/store')->load($order->getStoreId());
-			        $anyDate = $order->getCreatedAt();
-				$dateTimestamp = Mage::getModel('core/date')->timestamp(strtotime($anyDate));   
-				$date = date("Y-m-d",$dateTimestamp);
-				$subject = $this->getUserId().'_policyid_'.$storeObj->getFrontendName().'_'.$date;	  		
-			        $emailTemplate = Mage::getModel('core/email_template')->loadDefault('sales_email_order_template');           
-			        $emailTemplateVariables = array();
-			        $emailTemplateVariables['order'] = $order;
-			        $emailTemplateVariables['store'] = $storeObj;       
-			        $emailTemplate->setSenderName($fromname);
-			        $emailTemplate->setSenderEmail($fromemail);
-			        $emailTemplate->setType('html');
-			        $emailTemplate->setTemplateSubject($subject);
-			        $emailTemplate->send($email, $name, $emailTemplateVariables);		
-  			  			
+				for($i =0;$i<count($policyKeyArray);$i++){
+				        $storeObj = Mage::getModel('core/store')->load($order->getStoreId());
+				        $anyDate = $order->getCreatedAt();
+					$dateTimestamp = Mage::getModel('core/date')->timestamp(strtotime($anyDate));   
+					$date = date("Y-m-d",$dateTimestamp);
+					$subject = $this->getUserId().'_'.$policyKeyArray[$i].'_'.$storeObj->getFrontendName().'_'.$date;	  		
+				        $emailTemplate = Mage::getModel('core/email_template')->loadDefault('sales_email_order_template');           
+				        $emailTemplateVariables = array();
+				        $emailTemplateVariables['order'] = $order;
+				        $emailTemplateVariables['store'] = $storeObj;       
+				        $emailTemplate->setSenderName($fromname);
+				        $emailTemplate->setSenderEmail($fromemail);
+				        $emailTemplate->setType('html');
+				        $emailTemplate->setTemplateSubject($subject);
+				        $emailTemplate->send($email, $name, $emailTemplateVariables);		
+  			  	}		
 	   			
 	   		}  
 		
@@ -111,4 +130,15 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 		return $address;
 		
 	}
+	
+   
+ 
+	
+   static public function getOptionArray()
+    {
+        return array(
+            self::PRODUCTION    => Mage::helper('carebyzinc')->__('Production'),
+            self::SANDBOX   => Mage::helper('carebyzinc')->__('Sandbox')
+        );
+    }	
 }
