@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Zinc_Carebyzinc>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </Zinc_Carebyzinc>
     </modules>
     <frontend>
@@ -22,6 +22,13 @@
                     <frontName>carebyzinc</frontName>
                 </args>
             </carebyzinc>
+            <checkout>
+                <args>
+                    <modules>
+                        <zinc_carebyzinc_checkout before="Mage_Checkout">Zinc_Carebyzinc_Checkout</zinc_carebyzinc_checkout>
+                    </modules>
+                </args>
+            </checkout>
         </routers>
         <layout>
             <updates>
@@ -31,162 +38,160 @@
             </updates>
         </layout>
     </frontend>
-
     <admin>
-		<routers>
-			<adminhtml>
-				<args>
-					<modules>
-						<zinc_carebyzinc before="Mage_Adminhtml">Zinc_Carebyzinc_Adminhtml</zinc_carebyzinc>
-					</modules>
-				</args>				
-			</adminhtml>
-		</routers>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <zinc_carebyzinc before="Mage_Adminhtml">Zinc_Carebyzinc_Adminhtml</zinc_carebyzinc>
+                    </modules>
+                </args>				
+            </adminhtml>
+        </routers>
     </admin>
     <adminhtml>
-		<layout>
-			<updates>
-				<carebyzinc>
-					<file>zinc_carebyzinc.xml</file>
-				</carebyzinc>
-			</updates>
-		</layout>				
+        <layout>
+            <updates>
+                <carebyzinc>
+                    <file>zinc_carebyzinc.xml</file>
+                </carebyzinc>
+            </updates>
+        </layout>				
     </adminhtml>   
     <global>
-  	  <rewrite>
-         <zinc_carebyzinc>
-               <from><![CDATA[#^/checkout/cart/#]]></from>
-               <to>/carebyzinc/cart/</to>
-         </zinc_carebyzinc>
-          <carebyzinc_order>
-               <from><![CDATA[#^/sales/order/#]]></from>
-               <to>/carebyzinc/sales_order/</to>
-         </carebyzinc_order>
+        <rewrite>
+            <zinc_carebyzinc>
+                <from><![CDATA[#^/checkout/cart/#]]></from>
+                <to>/carebyzinc/cart/</to>
+            </zinc_carebyzinc>
+            <carebyzinc_order>
+                <from><![CDATA[#^/sales/order/#]]></from>
+                <to>/carebyzinc/sales_order/</to>
+            </carebyzinc_order>
         
-   	  </rewrite>
-
-	  <sales>
-		  <quote>
-			  <item>
-				  <product_attributes>
-					  <carebyzinc_option />
-					  <carebyzinc_price />
-					  <carebyzinc_variantid />
-					  <carebyzinc_parentid />
-				  </product_attributes>
-			  </item>
-		  </quote>
-	  </sales>
-	  <events>
-	<controller_action_predispatch_checkout_cart_index>
-		<observers>
-			<modify_carebyzinc>
-				<type>singleton</type>
-				<class>Zinc_Carebyzinc_Model_Observer</class>
-				<method>cartLoad</method>
-			</modify_carebyzinc>
-		</observers>
-	</controller_action_predispatch_checkout_cart_index>	
-	<controller_action_predispatch_checkout_onepage_index>
-			<observers>
-				<modify_carebyzinc>
-					<type>singleton</type>
-	               	<class>Zinc_Carebyzinc_Model_Observer</class>
-					<method>cartLoad</method>
-				</modify_carebyzinc>
-			</observers>
-	</controller_action_predispatch_checkout_onepage_index>
-	<sales_quote_remove_item>
-			<observers>
-				<delete_carebyzinc>
-					<type>singleton</type>
-	               	<class>Zinc_Carebyzinc_Model_Observer</class>
-					<method>warrantyDelete</method>
-				</delete_carebyzinc>
-			</observers>
-	</sales_quote_remove_item>	
-	<sales_model_service_quote_submit_after>
-			<observers>
-				<set_carebyzinc>
-					<type>singleton</type>
-	                <class>Zinc_Carebyzinc_Model_Observer</class>
-					<method>setCarebyzinc</method>
-				</set_carebyzinc>
-			</observers>
-	</sales_model_service_quote_submit_after>
-	<sales_order_save_after>
-			<observers>
-				<save_carebyzinc>
-					<type>singleton</type>
-	                <class>Zinc_Carebyzinc_Model_Observer</class>
-					<method>saveCarebyzinc</method>
-				</save_carebyzinc>
-			</observers>
-	</sales_order_save_after>
-	<sales_quote_item_set_product>
-        <observers>
-            <set_itemname>
-                 <type>singleton</type>
-	             <class>Zinc_Carebyzinc_Model_Observer</class>
-                 <method>salesQuoteItemSetProduct</method>
-            </set_itemname>
-        </observers>
-    </sales_quote_item_set_product>
-	</events>
-	<fieldsets>
-			<sales_convert_quote_item>
-				<carebyzinc_option>
-					<to_order_item>*</to_order_item>
-				</carebyzinc_option>
-				<carebyzinc_price>
-					<to_order_item>*</to_order_item>
-				</carebyzinc_price>
-				<carebyzinc_variantid>
-					<to_order_item>*</to_order_item>
-				</carebyzinc_variantid>
-				<carebyzinc_parentid>
-					<to_order_item>*</to_order_item>
-				</carebyzinc_parentid>
-			</sales_convert_quote_item>
-			<sales_convert_order_item>
-				<carebyzinc_option>
-					<to_quote_item>*</to_quote_item>
-				</carebyzinc_option>
-				<carebyzinc_price>
-					<to_quote_item>*</to_quote_item>
-				</carebyzinc_price>
-				<carebyzinc_variantid>
-					<to_quote_item>*</to_quote_item>
-				</carebyzinc_variantid>
-				<carebyzinc_parentid>
-					<to_quote_item>*</to_quote_item>
-				</carebyzinc_parentid>
-			</sales_convert_order_item>
-		</fieldsets>
-       		<models>
-	            <carebyzinc>
-	                <class>Zinc_Carebyzinc_Model</class>
-	                <resourceModel>carebyzinc_mysql4</resourceModel>
-	            </carebyzinc>
-	            <carebyzinc_mysql4>
-	                <class>Zinc_Carebyzinc_Model_Mysql4</class>
-	                <entities>
-	                   <order>
-	                        <table>zinc_carebyzinc_order</table>
-	                    </order>
-	                </entities>
-	            </carebyzinc_mysql4>
-	            <checkout>
-	           	 <rewrite>
-	               		 <cart>Zinc_Carebyzinc_Model_Checkout_Cart</cart> 
-	               		 <type_multishipping>Zinc_Carebyzinc_Model_Checkout_Multishipping</type_multishipping> 
-	           	 </rewrite>
-	            </checkout>
-	            <sales>
-		     	 <rewrite>
-		       		 <quote>Zinc_Carebyzinc_Model_Sales_Quote</quote>
-		     	 </rewrite>
-	    	    </sales>	    	   
+        </rewrite>
+        <sales>
+            <quote>
+                <item>
+                    <product_attributes>
+                        <carebyzinc_option />
+                        <carebyzinc_price />
+                        <carebyzinc_variantid />
+                        <carebyzinc_parentid />
+                    </product_attributes>
+                </item>
+            </quote>
+        </sales>
+        <events>
+            <controller_action_predispatch_checkout_cart_index>
+                <observers>
+                    <modify_carebyzinc>
+                        <type>singleton</type>
+                        <class>Zinc_Carebyzinc_Model_Observer</class>
+                        <method>cartLoad</method>
+                    </modify_carebyzinc>
+                </observers>
+            </controller_action_predispatch_checkout_cart_index>	
+            <controller_action_predispatch_checkout_onepage_index>
+                <observers>
+                    <modify_carebyzinc>
+                        <type>singleton</type>
+                        <class>Zinc_Carebyzinc_Model_Observer</class>
+                        <method>cartLoad</method>
+                    </modify_carebyzinc>
+                </observers>
+            </controller_action_predispatch_checkout_onepage_index>
+            <sales_quote_remove_item>
+                <observers>
+                    <delete_carebyzinc>
+                        <type>singleton</type>
+                        <class>Zinc_Carebyzinc_Model_Observer</class>
+                        <method>warrantyDelete</method>
+                    </delete_carebyzinc>
+                </observers>
+            </sales_quote_remove_item>	
+            <sales_model_service_quote_submit_after>
+                <observers>
+                    <set_carebyzinc>
+                        <type>singleton</type>
+                        <class>Zinc_Carebyzinc_Model_Observer</class>
+                        <method>setCarebyzinc</method>
+                    </set_carebyzinc>
+                </observers>
+            </sales_model_service_quote_submit_after>
+            <sales_order_save_after>
+                <observers>
+                    <save_carebyzinc>
+                        <type>singleton</type>
+                        <class>Zinc_Carebyzinc_Model_Observer</class>
+                        <method>saveCarebyzinc</method>
+                    </save_carebyzinc>
+                </observers>
+            </sales_order_save_after>
+            <sales_quote_item_set_product>
+                <observers>
+                    <set_itemname>
+                        <type>singleton</type>
+                        <class>Zinc_Carebyzinc_Model_Observer</class>
+                        <method>salesQuoteItemSetProduct</method>
+                    </set_itemname>
+                </observers>
+            </sales_quote_item_set_product>
+        </events>
+        <fieldsets>
+            <sales_convert_quote_item>
+                <carebyzinc_option>
+                    <to_order_item>*</to_order_item>
+                </carebyzinc_option>
+                <carebyzinc_price>
+                    <to_order_item>*</to_order_item>
+                </carebyzinc_price>
+                <carebyzinc_variantid>
+                    <to_order_item>*</to_order_item>
+                </carebyzinc_variantid>
+                <carebyzinc_parentid>
+                    <to_order_item>*</to_order_item>
+                </carebyzinc_parentid>
+            </sales_convert_quote_item>
+            <sales_convert_order_item>
+                <carebyzinc_option>
+                    <to_quote_item>*</to_quote_item>
+                </carebyzinc_option>
+                <carebyzinc_price>
+                    <to_quote_item>*</to_quote_item>
+                </carebyzinc_price>
+                <carebyzinc_variantid>
+                    <to_quote_item>*</to_quote_item>
+                </carebyzinc_variantid>
+                <carebyzinc_parentid>
+                    <to_quote_item>*</to_quote_item>
+                </carebyzinc_parentid>
+            </sales_convert_order_item>
+        </fieldsets>
+        <models>
+            <carebyzinc>
+                <class>Zinc_Carebyzinc_Model</class>
+                <resourceModel>carebyzinc_mysql4</resourceModel>
+            </carebyzinc>
+            <carebyzinc_mysql4>
+                <class>Zinc_Carebyzinc_Model_Mysql4</class>
+                <entities>
+                    <order>
+                        <table>zinc_carebyzinc_order</table>
+                    </order>
+                </entities>
+            </carebyzinc_mysql4>
+            <checkout>
+                <rewrite>
+                    <cart>Zinc_Carebyzinc_Model_Checkout_Cart</cart> 
+                    <type_multishipping>Zinc_Carebyzinc_Model_Checkout_Multishipping</type_multishipping> 
+                </rewrite>
+            </checkout>
+            <sales>
+                <rewrite>
+                    <quote>Zinc_Carebyzinc_Model_Sales_Quote</quote>
+                </rewrite>
+            </sales>	    	   
         </models>
         <resources>
             <carebyzinc_setup>
@@ -212,7 +217,7 @@
             <carebyzinc>
                 <class>Zinc_Carebyzinc_Block</class>
             </carebyzinc>
-	    <adminhtml>
+            <adminhtml>
                 <rewrite>
                     <catalog_product_grid>Zinc_Carebyzinc_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
                 </rewrite>
@@ -224,12 +229,22 @@
             </carebyzinc>
         </helpers>
     </global>
-     <default>
+    <default>
         <carebyzinc>
             <general>
-                <showquote>0</showquote>
-                 <carebytitle>Care by Zinc</carebytitle>
+                <quoteproduct>0</quoteproduct>
+                <quotecart>0</quotecart>
             </general>
+            <api>
+                <testmode>
+                    <value>live</value>
+                </testmode>
+            </api>
+<!--
+            <importorders>
+                <days>90</days>
+            </importorders>
+-->            
         </carebyzinc>
     </default>
 </config>

@@ -7,16 +7,24 @@
  */ 
 class Zinc_Carebyzinc_Model_System_Config_Source
 {
-   public function toOptionArray()
+    public function toOptionArray()
     {
         return array(
             array(
                 'value' => 'test',
-                'label' => 'Test Mode',
+                'label' => 'Regression',
+            ),
+            array(
+                'value' => 'sandbox',
+                'label' => 'Sandbox',
+            ),
+            array(
+                'value' => 'staging',
+                'label' => 'Staging',
             ),
             array(
                 'value' => 'live',
-                'label' => 'Production Mode',
+                'label' => 'Production',
             ),
         );
     }

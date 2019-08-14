@@ -12,11 +12,195 @@
 require_once 'Mage/Checkout/controllers/CartController.php';
 class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
 {   
+    
+    /**
+     * Add product to shopping cart action
+     *
+     * @return Mage_Core_Controller_Varien_Action
+     * @throws Exception
+     */
+    public function addAction()
+    {
+        if (!$this->_validateFormKey()) {
+            $this->_goBack();
+            return;
+        }
+        $cart   = $this->_getCart();
+        $params = $this->getRequest()->getParams();
+        
+        try {
+            if (isset($params['qty'])) {
+                $filter = new Zend_Filter_LocalizedToNormalized(
+                    array('locale' => Mage::app()->getLocale()->getLocaleCode())
+                );
+                $params['qty'] = $filter->filter($params['qty']);
+            }
+
+            $product = $this->_initProduct();
+            $related = $this->getRequest()->getParam('related_product');
+            
+            /**
+             * Check product availability
+             */
+            if (!$product) {
+                $this->_goBack();
+                return;
+            }
+            
+            $carebyzinc = $product->getCarebyzinc();
+            $isProduct = isset($params['isProduct']) && (int)$params['isProduct'] == 1 ? true : false;
+            
+            if($carebyzinc == '1' && $isProduct) {
+                if(!isset($params['carebyzinc_option'])) {
+                    $cbzCategory = $product->getCarebyzincCategory();
+
+                    if($carebyzinc == '1' && !empty($cbzCategory)) {
+                        $model = Mage::getModel('carebyzinc/order');
+                        $result = $model->prepareInterstitials($cbzCategory);
+                        $sess = Mage::getSingleton("core/session",  array("name"=>"frontend"));
+                        $sess->setData('interstitials', $result);
+
+                        $url = $this->_getSession()->getRedirectUrl(true);
+                        if ($url) {
+                            $this->getResponse()->setRedirect($url);
+                        } else {
+                            $this->_redirectReferer(Mage::helper('checkout/cart')->getCartUrl());
+                        }
+                    }
+                } else {
+                    $cart->addProduct($product, $params);
+                    if (!empty($related)) {
+                        $cart->addProductsByIds(explode(',', $related));
+                    }
+
+                    $cart->save();
+                    $this->_getSession()->setCartWasUpdated(true);
+
+                    /**
+                     * @todo remove wishlist observer processAddToCart
+                     */
+                    Mage::dispatchEvent('checkout_cart_add_product_complete',
+                        array('product' => $product, 'request' => $this->getRequest(), 'response' => $this->getResponse())
+                    );
+
+                    if (!$this->_getSession()->getNoCartRedirect(true)) {
+                        if (!$cart->getQuote()->getHasError()) {
+                            $message = $this->__('%s was added to your shopping cart.', Mage::helper('core')->escapeHtml($product->getName()));
+                            $this->_getSession()->addSuccess($message);
+                        }
+                        $this->_goBack();
+                    }
+                }
+            } else {
+                $cart->addProduct($product, $params);
+                if (!empty($related)) {
+                    $cart->addProductsByIds(explode(',', $related));
+                }
+
+                $cart->save();
+                $this->_getSession()->setCartWasUpdated(true);
+
+                /**
+                 * @todo remove wishlist observer processAddToCart
+                 */
+                Mage::dispatchEvent('checkout_cart_add_product_complete',
+                    array('product' => $product, 'request' => $this->getRequest(), 'response' => $this->getResponse())
+                );
+                
+                if (!$this->_getSession()->getNoCartRedirect(true)) {
+                    if (!$cart->getQuote()->getHasError()) {
+                        $message = $this->__('%s was added to your shopping cart.', Mage::helper('core')->escapeHtml($product->getName()));
+                        $this->_getSession()->addSuccess($message);
+                    }
+                    $this->_goBack();
+                }
+            }
+        } catch (Mage_Core_Exception $e) {
+            if ($this->_getSession()->getUseNotice(true)) {
+                $this->_getSession()->addNotice(Mage::helper('core')->escapeHtml($e->getMessage()));
+            } else {
+                $messages = array_unique(explode("\n", $e->getMessage()));
+                foreach ($messages as $message) {
+                    $this->_getSession()->addError(Mage::helper('core')->escapeHtml($message));
+                }
+            }
+
+            $url = $this->_getSession()->getRedirectUrl(true);
+            if ($url) {
+                $this->getResponse()->setRedirect($url);
+            } else {
+                $this->_redirectReferer(Mage::helper('checkout/cart')->getCartUrl());
+            }
+        } catch (Exception $e) {
+            $this->_getSession()->addException($e, $this->__('Cannot add the item to shopping cart.'));
+            Mage::logException($e);
+            $this->_goBack();
+        }
+    }
+    
+    /**
+     * Process product adding to cart
+     */
+    public function ajaxProcessItemAction()
+    {
+        $response = false;
+        $cart   = $this->_getCart();
+        $params = $this->getRequest()->getParams();
+        $post = $this->getRequest()->getPost();
+        
+        if(is_array($post)) {
+            $pId = (int)$post['pId'];
+            $product = Mage::getModel('catalog/product')->load($pId);
+            
+            /**
+             * Check product availability
+             */
+            if (!$product) {
+                $this->_goBack();
+                return;
+            }
+            
+            $model = Mage::getModel('carebyzinc/order');
+            $response = $model->processPurchaseInsurance($post);
+
+            if($response) {
+                switch($response['action']) {
+                    case 'cancel':
+                        $cart->addProduct($product, $params);
+                        if (!empty($related)) {
+                            $cart->addProductsByIds(explode(',', $related));
+                        }
+
+                        $cart->save();
+                        $this->_getSession()->setCartWasUpdated(true);
+
+                        /**
+                         * @todo remove wishlist observer processAddToCart
+                         */
+                        Mage::dispatchEvent('checkout_cart_add_product_complete',
+                            array('product' => $product, 'request' => $this->getRequest(), 'response' => $this->getResponse())
+                        );
+
+                        $message = $this->__('%s was added to your shopping cart.', Mage::helper('core')->escapeHtml($product->getName()));
+                        $this->_getSession()->addSuccess($message);
+                        break;
+                    case 'add':
+                        break;
+                }
+            }
+
+            $sess = Mage::getSingleton("core/session",  array("name"=>"frontend"));
+            $sess->unsetData('interstitials');
+        }
+        
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($response['url']));
+    }
+    
     /**
      * Update product configuration for a cart item
      */
     public function updateItemOptionsAction()
-    {		
+    {
         $cart   = $this->_getCart();
         $id = (int) $this->getRequest()->getParam('id');
        
@@ -319,6 +503,4 @@ class Zinc_Carebyzinc_CartController extends Mage_Checkout_CartController
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
     }
-
-
 }

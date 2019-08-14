@@ -17,14 +17,14 @@ class Zinc_Carebyzinc_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtm
     protected function _prepareColumns()
     {
         
-	$this->addColumnAfter('carebyzinc',
-            array(
-                'header'=> Mage::helper('catalog')->__('Care by Zinc'),
-                'width' => '70px',
-                'index' => 'carebyzinc',
-                'type'  => 'options',
-                'options' => array('1' => 'Enabled', '0' => 'Disabled'),
-        ), 'visibility');
+//	$this->addColumnAfter('carebyzinc',
+//            array(
+//                'header'=> Mage::helper('catalog')->__('Care by Zinc'),
+//                'width' => '70px',
+//                'index' => 'carebyzinc',
+//                'type'  => 'options',
+//                'options' => array('1' => 'Enabled', '0' => 'Disabled'),
+//        ), 'visibility');
 
         return parent::_prepareColumns();
     }
@@ -59,19 +59,19 @@ class Zinc_Carebyzinc_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtm
 		
 	$carebyzinc = Mage::getSingleton('carebyzinc/carebyzinc')->getOptionArray();
 
-        $this->getMassactionBlock()->addItem('zinc_carebyzinc', array(
-				 'label'=> Mage::helper('carebyzinc')->__('Change Carebyzinc'),
-				 'url'  => $this->getUrl('adminhtml/product/massCarebyzinc', array('_current'=>true)),
-				 'additional' => array(
-				 'visibility' => array(
-				 'name' => 'zinc_carebyzinc',
-				 'type' => 'select',
-				 'class' => 'required-entry',
-				 'label' => Mage::helper('carebyzinc')->__('Care by Zinc'),
-				 'values' => $carebyzinc
-			   )
-             )
-        ));
+//        $this->getMassactionBlock()->addItem('zinc_carebyzinc', array(
+//				 'label'=> Mage::helper('carebyzinc')->__('Change Carebyzinc'),
+//				 'url'  => $this->getUrl('adminhtml/product/massCarebyzinc', array('_current'=>true)),
+//				 'additional' => array(
+//				 'visibility' => array(
+//				 'name' => 'zinc_carebyzinc',
+//				 'type' => 'select',
+//				 'class' => 'required-entry',
+//				 'label' => Mage::helper('carebyzinc')->__('Care by Zinc'),
+//				 'values' => $carebyzinc
+//			   )
+//             )
+//        ));
 
         if (Mage::getSingleton('admin/session')->isAllowed('catalog/update_attributes')){
             $this->getMassactionBlock()->addItem('attributes', array(

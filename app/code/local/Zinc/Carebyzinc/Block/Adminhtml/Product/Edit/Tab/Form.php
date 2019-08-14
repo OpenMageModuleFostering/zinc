@@ -13,7 +13,7 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Edit_Tab_Form extends Mage_Adminht
       $this->setForm($form);
       $fieldset = $form->addFieldset('carebyzinc_form', array('legend'=>Mage::helper('carebyzinc')->__('Care By Zinc')));
 	  $fieldset->addField('carebyzinc', 'select', array(
-          'label'     => Mage::helper('carebyzinc')->__('Care by Zinc'),
+          'label'     => Mage::helper('carebyzinc')->__('Enable Zinc Quote'),
           'class'     => 'required-entry',
           'required'  => true,
           'name'      => 'carebyzinc',
@@ -32,7 +32,7 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Edit_Tab_Form extends Mage_Adminht
 
       ));  
       $fieldset->addField('carebyzinc_category', 'select', array(
-          'label'     => Mage::helper('carebyzinc')->__('Category'),
+          'label'     => Mage::helper('carebyzinc')->__('Zinc Category'),
           'class'     => 'required-entry',
           'required'  => true,
           'name'      => 'category',	         
@@ -61,7 +61,7 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Edit_Tab_Form extends Mage_Adminht
       $category = Mage::registry('carebyzinc_data')->getData('carebyzinc_category');
       if(($this->getRequest()->getParam('id')) && ($category)) { 
 	       $fieldset->addField('carebyzinc_subcategory', 'select', array(
-	          'label'     => Mage::helper('carebyzinc')->__('Sub Category'),
+	          'label'     => Mage::helper('carebyzinc')->__('Zinc Subcategory'),
 	          'class'     => 'required-entry',
 	          'required'  => true,
 	          'name'      => 'subcategory',
@@ -70,7 +70,7 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Edit_Tab_Form extends Mage_Adminht
       }else{
       	
       	$fieldset->addField('carebyzinc_subcategory', 'select', array(
-	          'label'     => Mage::helper('carebyzinc')->__('Sub Category'),
+	          'label'     => Mage::helper('carebyzinc')->__('Zinc Subcategory'),
 	          'class'     => 'required-entry',
 	          'required'  => true,
 	          'name'      => 'subcategory',
@@ -93,16 +93,16 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Edit_Tab_Form extends Mage_Adminht
 	  )); 
       
      $this->setChild('form_after', $this->getLayout()
-    	   ->createBlock('adminhtml/widget_form_element_dependence')
-           ->addFieldMap('carebyzinc', 'carebyzinc')
-           ->addFieldMap('carebyzinc_category', 'carebyzinc_category')
-           ->addFieldMap('carebyzinc_manufacturer', 'carebyzinc_manufacturer')
-           ->addFieldMap('carebyzinc_model', 'carebyzinc_model')
-		   ->addFieldMap('carebyzinc_subcategory', 'carebyzinc_subcategory')
-           ->addFieldDependence('carebyzinc_category', 'carebyzinc', 1) 
-           ->addFieldDependence('carebyzinc_subcategory', 'carebyzinc', 1) 
-           ->addFieldDependence('carebyzinc_model', 'carebyzinc_category', array((string)'Bicycle',(string)'Electronics')) 
-           ->addFieldDependence('carebyzinc_manufacturer', 'carebyzinc_category', array((string)'Bicycle',(string)'Electronics')) 
+        ->createBlock('adminhtml/widget_form_element_dependence')
+        ->addFieldMap('carebyzinc', 'carebyzinc')
+        ->addFieldMap('carebyzinc_category', 'carebyzinc_category')
+        ->addFieldMap('carebyzinc_manufacturer', 'carebyzinc_manufacturer')
+        ->addFieldMap('carebyzinc_model', 'carebyzinc_model')
+        ->addFieldMap('carebyzinc_subcategory', 'carebyzinc_subcategory')
+        ->addFieldDependence('carebyzinc_category', 'carebyzinc', 1) 
+        ->addFieldDependence('carebyzinc_subcategory', 'carebyzinc', 1) 
+        ->addFieldDependence('carebyzinc_model', 'carebyzinc_category', array((string)'Bicycle',(string)'Electronics')) 
+        ->addFieldDependence('carebyzinc_manufacturer', 'carebyzinc_category', array((string)'Bicycle',(string)'Electronics')) 
 	  );
      
       if ( Mage::getSingleton('adminhtml/session')->getVendorData() )

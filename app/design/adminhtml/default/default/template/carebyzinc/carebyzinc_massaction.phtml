@@ -1,113 +1,130 @@
 <?php
 /*
-* Care by Zinc in Massaction Page
-*/
-
+ * Care by Zinc in Massaction Page
+ */
 ?>
 
 <div class="main-col-inner">
-	<div id="messages"></div>
+    <div id="messages"></div>
     <div class="content-header">
-		<h3 class="icon-head head-adminhtml-product"><?php echo $this->__('Select Care by Zinc Categories')?></h3> 
-		   <p class="form-buttons">
-			   <button id="id_massedit_form_back" title="<?php echo $this->__('Back')?>" type="button" class="scalable back" onclick="setLocation('<?php echo $this->getUrl("*/*/index")?>')" style=""><span><span><span><?php echo $this->__('Back')?></span></span></span></button>
-				<button id="id_massedit_form_save" title="<?php echo $this->__('Save')?>" type="button" class="scalable save" onclick="editForm.submit();" style=""><span><span><span><?php echo $this->__('Save')?></span></span></span></button>
-			</p>
-	</div>
-	<div class="entry-edit">
-    <form id="massedit_form" action="<?php echo $this->getUrl("*/*/saveCarebyzincCategory")?>" method="post" enctype="multipart/form-data">
-		<?php echo $this->getBlockHtml('formkey') ?>
-		<input name="product_ids" value="<?php echo $this->getProductIds();?>" type="hidden" />
-		<div id="product_tabs_form_section_content" style="">
-			<div class="entry-edit">
-			<div class="entry-edit-head">
-			<h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Care By Zinc')?></h4>
-			<div class="form-buttons"></div>
-		</div>
-    <div class="fieldset " id="carebyzinc_form">
-    <div class="hor-scroll">
-                        <table class="form-list" cellspacing="0">
-            <tbody>
-  
-<tr>
-        <td class="label"><label for="carebyzinc_category"><?php echo $this->__('Category')?>
-         <span class="required">*</span></label></td>
-         <?php $categories =  Mage::getModel('carebyzinc/carebyzinc')->getCategoryArray();?>
-		<td class="value">
-			<select id="carebyzinc_category" name="carebyzinc_category" class="required-entry select" onchange="getSubcategories(this.value); ">
-				<?php foreach($categories as $key => $value):?>
-				<option value="<?php echo $key;?>"><?php echo $value;?></option>
-				<?php endforeach;?>
-			</select>     
-		  </td>
-    </tr>
-<tr>
-       <td class="label"><label for="carebyzinc_subcategory"><?php echo $this->__('Sub Category')?> <span class="required">*</span></label></td>
-		<td class="value">
-			<select id="carebyzinc_subcategory" name="carebyzinc_subcategory" class="select">
-				<option value="" selected="selected"><?php echo $this->__('Please Select')?></option>
-			</select>  
-         </td>
-         	
-		<td>
-			<label for="guess_subcategory">
-				<input type="checkbox" id="guess_subcategory" name="guess_subcategory" /> <?php echo $this->__('Guess a Sub Category')?>
-			</label>
-		</td> 
-    </tr>
-<tr style="display: none;" id="carebyzinc_manufacturer_tr" >
-        <td class="label"><label for="carebyzinc_manufacturer"><?php echo $this->__('Manufacturer')?>' <span class="required">*</span></label></td>
-    <td class="value">
-        <input id="carebyzinc_manufacturer" name="carebyzinc_manufacturer" class="input-text" type="text"> 
-    </td>
-    </tr>
-	<tr id="carebyzinc_model_tr" style="display: none;">
-        <td class="label"><label for="carebyzinc_model"><?php echo $this->__('Model')?> <span class="required">*</span></label></td>
-    <td class="value">
-        <input id="carebyzinc_model" name="carebyzinc_model" type="text"  class="input-text"> 
-     </td>
-    </tr>
-            </tbody>
-        </table>
-            </div>
-        </div>
-</div>
-</div></form></div>
-<script type="text/javascript">
-    editForm = new varienForm('massedit_form', '');
-    function getSubcategories(selectElement){
-           var reloadurl = '<?php  echo $this->getUrl("adminhtml/product/getSubcategories")?>';
-           if(selectElement){
-			   var category = selectElement.toLowerCase();
-			   var subarray = ['bicycle','electronics'];
-			   if(subarray.indexOf(category) >= 0){
-					$('carebyzinc_manufacturer_tr').show();
-					$('carebyzinc_model_tr').show();
-					document.getElementById('carebyzinc_manufacturer').className += ' required-entry validate-length maximum-length-30 minimum-length-1';
-					document.getElementById('carebyzinc_model').className += ' required-entry validate-length maximum-length-30 minimum-length-1';
-			   }else{
-				   $('carebyzinc_manufacturer_tr').hide();
-				   $('carebyzinc_model_tr').hide();
-				   document.getElementById('carebyzinc_manufacturer').className = 'input-text';
-				   document.getElementById('carebyzinc_model').className = 'input-text';
-			   }
-			   new Ajax.Request(reloadurl, {parameters: {  cat: selectElement},
-			   method: 'post',         
-			   onComplete: function(transport) {
-				var content = JSON.parse(transport.responseText); 
-				var i = 0;
-				document.getElementById('carebyzinc_subcategory').options.length = 0;
-				for (var key in content) {
-					document.getElementById('carebyzinc_subcategory').options[i] = new Option(content[key],key);
-					i++;
-				}
-						
-            }
-        });
-        }else
-        	document.getElementById('carebyzinc_subcategory').innerHTML='';
-    }
-</script>
+        <h3 class="icon-head head-adminhtml-product"><?php echo $this->__('Select Care by Zinc Categories') ?></h3> 
+        <p class="form-buttons">
+            <button id="id_massedit_form_back" title="<?php echo $this->__('Back') ?>" type="button" class="scalable back" onclick="setLocation('<?php echo $this->getUrl("*/*/index") ?>')" style=""><span><span><span><?php echo $this->__('Back') ?></span></span></span></button>
+            <button id="id_massedit_form_save" title="<?php echo $this->__('Save') ?>" type="button" class="scalable save" onclick="editForm.submit();" style=""><span><span><span><?php echo $this->__('Save') ?></span></span></span></button>
+        </p>
+    </div>
+    <div class="entry-edit">
+        <form id="massedit_form" action="<?php echo $this->getUrl("*/*/saveCarebyzincCategory") ?>" method="post" enctype="multipart/form-data">
+            <?php echo $this->getBlockHtml('formkey') ?>
+            <input name="product_ids" value="<?php echo $this->getProductIds(); ?>" type="hidden" />
+            <div id="product_tabs_form_section_content" style="">
+                <div class="entry-edit">
+                    <div class="entry-edit-head">
+                        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Care By Zinc') ?></h4>
+                        <div class="form-buttons"></div>
+                    </div>
+                    <div class="fieldset " id="carebyzinc_form">
+                        <div class="hor-scroll">
+                            <table class="form-list" cellspacing="0">
+                                <tbody>
 
+                                    <tr>
+                                        <td class="label"><label for="carebyzinc_category"><?php echo $this->__('Zinc Category') ?>
+                                                <span class="required">*</span></label></td>
+                                        <?php $categories = Mage::getModel('carebyzinc/carebyzinc')->getCategoryArray(); ?>
+                                        <td class="value">
+                                            <select id="carebyzinc_category" name="carebyzinc_category" class="required-entry select" onchange="getSubcategories(this.value);
+                    ">
+                                                <?php foreach ($categories as $key => $value): ?>
+                                                    <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                                                <?php endforeach; ?>
+                                            </select>     
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label"><label for="carebyzinc_subcategory"><?php echo $this->__('Zinc Subcategory') ?> <span class="required">*</span></label></td>
+                                        <td class="value">
+                                            <select id="carebyzinc_subcategory" name="carebyzinc_subcategory" class="select">
+                                                <option value="" selected="selected"><?php echo $this->__('Please Select') ?></option>
+                                            </select>  
+                                        </td>
+
+                                        <td class="guess-select">
+                                            <label for="guess_subcategory">
+                                                <input type="checkbox" id="guess_subcategory" name="guess_subcategory" value="0" /> <?php echo $this->__('Guess a Subcategory') ?>
+                                            </label>
+                                        </td> 
+                                    </tr>
+                                    <tr style="display: none;" id="carebyzinc_manufacturer_tr" >
+                                        <td class="label"><label for="carebyzinc_manufacturer"><?php echo $this->__('Manufacturer') ?>' <span class="required">*</span></label></td>
+                                        <td class="value">
+                                            <input id="carebyzinc_manufacturer" name="carebyzinc_manufacturer" class="input-text" type="text"> 
+                                        </td>
+                                    </tr>
+                                    <tr id="carebyzinc_model_tr" style="display: none;">
+                                        <td class="label"><label for="carebyzinc_model"><?php echo $this->__('Model') ?> <span class="required">*</span></label></td>
+                                        <td class="value">
+                                            <input id="carebyzinc_model" name="carebyzinc_model" type="text"  class="input-text"> 
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div></form></div>
+    <script type="text/javascript">
+        editForm = new varienForm('massedit_form', '');
+        function getSubcategories(selectElement) {
+            var reloadurl = '<?php echo $this->getUrl("adminhtml/product/getSubcategories") ?>';
+            if (selectElement) {
+                var category = selectElement.toLowerCase();
+                var subarray = ['bicycle', 'electronics'];
+                if (subarray.indexOf(category) >= 0) {
+                    $('carebyzinc_manufacturer_tr').show();
+                    $('carebyzinc_model_tr').show();
+                    document.getElementById('carebyzinc_manufacturer').className += ' required-entry validate-length maximum-length-30 minimum-length-1';
+                    document.getElementById('carebyzinc_model').className += ' required-entry validate-length maximum-length-30 minimum-length-1';
+                } else {
+                    $('carebyzinc_manufacturer_tr').hide();
+                    $('carebyzinc_model_tr').hide();
+                    document.getElementById('carebyzinc_manufacturer').className = 'input-text';
+                    document.getElementById('carebyzinc_model').className = 'input-text';
+                }
+                new Ajax.Request(reloadurl, {parameters: {cat: selectElement},
+                    method: 'post',
+                    onComplete: function (transport) {
+                        var content = JSON.parse(transport.responseText);
+                        var i = 0;
+                        document.getElementById('carebyzinc_subcategory').options.length = 0;
+                        for (var key in content) {
+                            document.getElementById('carebyzinc_subcategory').options[i] = new Option(content[key], key);
+                            i++;
+                        }
+
+                    }
+                });
+            } else
+                document.getElementById('carebyzinc_subcategory').innerHTML = '';
+        }
+    </script>
+    <script>
+    //<![CDATA[
+        jQuery.noConflict();
+        jQuery(document).ready(function () {
+            var isChecked = 0;
+            jQuery('#guess_subcategory').change(function() {
+                isChecked = jQuery('#guess_subcategory').attr('value');
+                if(isChecked == '0') {
+                    jQuery('#carebyzinc_subcategory').attr('disabled', 'disabled');
+                    jQuery('#guess_subcategory').attr('value', '1');
+                } else {
+                    jQuery('#carebyzinc_subcategory').removeAttr('disabled');
+                    jQuery('#guess_subcategory').attr('value', '0');
+                }
+            });
+        });
+    //]]>
+    </script>
 </div>
-                    
+

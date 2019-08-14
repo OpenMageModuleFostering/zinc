@@ -1,42 +1,37 @@
-<?php $quoteData = $this->getQuoteData(); 
-	$itemId = $this->getItemId();
-	$pId = $this->getPId();
+<?php
+$quoteData = $this->getQuoteData();
+$itemId = $this->getItemId();
+$pId = $this->getPId();
 ?>
-<?php if(! empty($quoteData)): ?>
+<?php if (!empty($quoteData)): ?>
+        <?php if (is_array($quoteData)): ?>
+        <ul class="product-list">
+        <?php foreach ($quoteData as $item): ?>
+            <li>
+                <div class="bx-l">
+                    <div class="squared input">
+                        <input type="radio" value="<?php echo $item['id']; ?>" id="carebyzinc_<?php echo $itemId . '_' . $item['id']; ?>" name="carebyzinc_option_<?php echo $itemId ?>" onclick="updateCareByZinc(<?php echo $itemId ?>)"/>
+                        <label for="carebyzinc_<?php echo $itemId . '_' . $item['id']; ?>"></label>
+                    </div>
+                </div>
+                <div class="bx-r">
+                    <h2 class="p-price"><?php echo Mage::helper('core')->currency($item['price_per_year']); ?></h2>
+                    <h3 class="p-name quotelabel"><?php echo $item['description']; ?></h3>
+                </div>
+            </li>
+        <?php endforeach; ?>
+        </ul>
+        <?php $helper = Mage::helper('carebyzinc');
+        $zip = $this->getZipData() ? $this->getZipData() : $helper->getZipCode();
+        ?>
 
-<?php if( is_array($quoteData)): ?>
-<ul class="product-list">
-  <?php foreach($quoteData as $item): ?>
-      <li>
-          <div class="bx-l">
-              <div class="squared input">
-                  <input type="radio" value="<?php echo $item['id']; ?>" id="carebyzinc_<?php echo $itemId.'_'.$item['id']; ?>" name="carebyzinc_option_<?php echo $itemId?>" onclick="updateCareByZinc(<?php echo $itemId?>)"/>
-                  <label for="carebyzinc_<?php echo $itemId.'_'.$item['id']; ?>"></label>
-              </div>
-          </div>
-          <div class="bx-r">
-              <h2 class="p-price"><?php echo Mage::helper('core')->currency($item['price_per_year']); ?></h2>
-              <h3 class="p-name quotelabel"><?php echo $item['description']; ?></h3>
-          </div>
-      </li>
-  <?php endforeach; ?>
-</ul>
-<?php $helper =  Mage::helper('carebyzinc');
-$zip = $this->getZipData()? $this->getZipData():$helper->getZipCode();?>
-
-	<div class="validation-advice carebyzinc_validation" id="advice-required-entry_<?php echo $itemId; ?>" style="display:none;"><?php echo $this->__('This is a required field.');?></div>
-	<span><?php echo $this->__('Based on zip:')?></span> <span class="updatezip" onclick="openUpdatezip(<?php echo $itemId; ?>)"><strong><u><?php echo $zip ;?></u></strong></span>
-	<div id="updatezipside_<?php echo $itemId; ?>" style="display:none;">
-			<input type="text" name="zipcode_<?php echo $itemId; ?>" id="zipcode_<?php echo $itemId; ?>" value="<?php echo $zip ;?>" placeholder="Enter Zip code here" style="width:21%"/>
-
-			<button class="btn-zinc showCarebyzinc" id="showCarebyzinc_<?php echo $itemId; ?>" onclick="showCarebyzinc(<?php echo $pId; ?>,<?php echo $itemId; ?>); return false;"><?php echo $this->__('Confirm')?><span id="care-loader_<?php echo $itemId; ?>" class="care-loader"></span></button> 
-        
-		</div>
-<?php else:
-//echo $quoteData;
-?>
-<?php endif; ?>
-<?php else:
-//echo 'No quotes available';
-?>
+        <div class="validation-advice carebyzinc_validation" id="advice-required-entry_<?php echo $itemId; ?>"><?php echo $this->__('This is a required field.'); ?></div>
+        <span class="cart-selected-zipcode"><?php echo $this->__('Based on zip:') ?></span> <span class="updatezip" onclick="openUpdatezip(<?php echo $itemId; ?>)"><strong><u><?php echo $zip; ?></u></strong></span>
+        <div class="cart-update-zipcode" id="updatezipside_<?php echo $itemId; ?>">
+            <input type="text" name="zipcode_<?php echo $itemId; ?>" id="zipcode_<?php echo $itemId; ?>" value="<?php echo $zip; ?>" placeholder="Enter Zip code here" style="width:21%"/>
+            <button class="btn-zinc showCarebyzinc" id="showCarebyzinc_<?php echo $itemId; ?>" onclick="showCarebyzinc(<?php echo $pId; ?>,<?php echo $itemId; ?>); return false;"><?php echo $this->__('Confirm') ?><span id="care-loader_<?php echo $itemId; ?>" class="care-loader"></span></button>
+        </div>
+    <?php else: ?>
+    <?php endif; ?>
+<?php else: ?>
 <?php endif; ?>

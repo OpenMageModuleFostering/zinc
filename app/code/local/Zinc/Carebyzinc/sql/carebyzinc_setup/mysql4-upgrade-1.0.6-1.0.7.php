@@ -20,16 +20,16 @@ $product = Mage::getModel('catalog/product');
 $product->setWebsiteIds($websiteIds);
 $product->setTypeId('virtual');
 $product->addData(array(
-	'sku'    => 'carebyzinc',
-	'name'    => 'Warranty',
+	'sku'    => 'Care by Zinc',
+	'name'    => 'Care by Zinc Insurance Policy',
     'attribute_set_id' => $product->getDefaultAttributeSetId(),
     'status' => Mage_Catalog_Model_Product_Status::STATUS_ENABLED, 
     'visibility' => Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE, 
     'weight' => 1,
     'price'    => 0.00,
     'tax_class_id' => 0, 
-    'description'  => 'Warranty',
-	'short_description' => 'Warranty',	
+    'description'  => 'Represent the Care by Zinc Insurance Policy',
+	'short_description' => 'Represent the Care by Zinc Insurance Policy',	
     
 
 ));

@@ -39,24 +39,7 @@
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_Yesno</source_model>
                         </enabled>
-                        <carebytitle>
-                            <label>Display Label</label>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <frontend_type>text</frontend_type>
-                        </carebytitle>
-                          <showquote>
-                            <label>Show Quote on Product Page</label>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
- 			    <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_Yesno</source_model>  
-                         </showquote>
-                         <defaultzip>
+                        <defaultzip>
                             <label>Default Zipcode</label>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
@@ -65,7 +48,7 @@
                             <frontend_type>text</frontend_type>
                         </defaultzip>
                         <warranty_product>
-                            <label>Warranty Product Id</label>
+                            <label>Insurance Virtual Product ID</label>
                             <sort_order>50</sort_order>
                             <validate>required-entry validate-number</validate>
                             <show_in_default>1</show_in_default>
@@ -73,108 +56,202 @@
                             <show_in_store>1</show_in_store>
                             <frontend_type>text</frontend_type>
                         </warranty_product>
-                        
-                          
                     </fields>
                 </general>
-				<api>
+                <api>
                     <label>Configuration</label>
                     <sort_order>20</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                      <protocol>
-                            <label>Protocol</label>
-			   <frontend_type>select</frontend_type>
-                            <sort_order>0</sort_order>
-                            <source_model>carebyzinc/system_config_protocol</source_model>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </protocol>
-                     <testmode>
-                            <label>Test / Production Mode</label>
-			   <frontend_type>select</frontend_type>
+                        <testmode>
+                            <label>API Mode</label>
+                            <frontend_type>select</frontend_type>
                             <sort_order>1</sort_order>
                             <source_model>carebyzinc/system_config_source</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </testmode>
-                         <test_url>
-                            <label>Test API URL</label>
-			    <frontend_type>text</frontend_type>
-			    <depends>
-			    <testmode>
-			        <value>test</value>
-			    </testmode>
-			    </depends>
+                        <test_url>
+                            <label>Regression API URL</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>test</value>
+                                </testmode>
+                            </depends>
                             <sort_order>15</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </test_url>
-                        <url>
-                            <label>Production API URL</label>
-			    <frontend_type>text</frontend_type>
-			    <depends>
-			    <testmode>
-			        <value>live</value>
-			    </testmode>
-			    </depends>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </url>
-			
-                        <xuser_token>
-                            <label>X-User-Token</label>
-			   <frontend_type>text</frontend_type>
-			   <depends>
-			    <testmode>
-			        <value>live</value>
-			    </testmode>
-			    </depends>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </xuser_token>
-                        
                         <test_xuser_token>
-                            <label>Test API X-User-Token</label>
-			   <frontend_type>text</frontend_type>
-			    <depends>
-			    <testmode>
-			        <value>test</value>
-			    </testmode>
-			    </depends>
+                            <label>Regression API X-User-Token</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>test</value>
+                                </testmode>
+                            </depends>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </test_xuser_token>
-                          <xuser_email>
-                            <label>X-User-Email</label>
-			    <frontend_type>text</frontend_type>
-                            <sort_order>40</sort_order>
+                        <sandbox_url>
+                            <label>Sandbox API URL</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>sandbox</value>
+                                </testmode>
+                            </depends>
+                            <sort_order>15</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
+                        </sandbox_url>
+                        <sandbox_xuser_token>
+                            <label>Sandbox API X-User-Token</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>sandbox</value>
+                                </testmode>
+                            </depends>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>                            
+                        </sandbox_xuser_token>
+                        <staging_url>
+                            <label>Staging API URL</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>staging</value>
+                                </testmode>
+                            </depends>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>                            
+                        </staging_url>
+                        <staging_xuser_token>
+                            <label>Staging API X-User-Token</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>staging</value>
+                                </testmode>
+                            </depends>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>                            
+                        </staging_xuser_token>
+                        <url>
+                            <label>Production API URL</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>live</value>
+                                </testmode>
+                            </depends>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>                            
+                        </url>
+                        <xuser_token>
+                            <label>X-User-Token</label>
+                            <frontend_type>text</frontend_type>
+                            <depends>
+                                <testmode>
+                                    <value>live</value>
+                                </testmode>
+                            </depends>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>                            
+                        </xuser_token>
+                        <xuser_email>
+                            <label>X-User-Email</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
                         </xuser_email>
-                          <validate translate="label" module="carebyzinc">
-      				 <comment>Please save configuration value before validating.</comment>
-      				 <frontend_type>button</frontend_type>
-     				 <frontend_model>carebyzinc/adminhtml_system_config_tokenvalidate</frontend_model>
-	                            <sort_order>120</sort_order>
-	                            <show_in_default>1</show_in_default>
-	                            <show_in_website>1</show_in_website>
-	                            <show_in_store>0</show_in_store>
+                        <validate translate="label" module="carebyzinc">
+                            <comment>Please save configuration value before validating.</comment>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>carebyzinc/adminhtml_system_config_tokenvalidate</frontend_model>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
                         </validate>
                     </fields>
                 </api>
+                <display>
+                    <label>Display (Quote Visibility)</label>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <quoteproduct>
+                            <label>Product Page</label>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_Yesno</source_model>  
+                        </quoteproduct>
+                        <quotecart>
+                            <label>Cart</label>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_Yesno</source_model>  
+                        </quotecart>
+                    </fields>
+                </display>
+<!--                
+                    <importorders>
+                    <label>Import Orders</label>
+                    <sort_order>40</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <days>
+                            <label>Days</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </days>
+                        <import translate="label" module="carebyzinc">
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>carebyzinc/adminhtml_system_config_importorders</frontend_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </import>
+                    </fields>
+                </importorders>
+-->
             </groups>
         </carebyzinc>
     </sections>

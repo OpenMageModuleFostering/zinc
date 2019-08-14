@@ -30,7 +30,7 @@
 		<h3 class="product-name">
 			<?php if($_item->getProductId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')): 			
 				$model = Mage::getModel('carebyzinc/carebyzinc');
-				$name = $model->getWarrentyName($_item->getCarebyzincParentid());
+				$name = $model->getWarrantyName($_item->getCarebyzincParentid());
 			?>
 				<?php echo $this->escapeHtml($this->getProductName().$name) ?>
 			<?php else:?>

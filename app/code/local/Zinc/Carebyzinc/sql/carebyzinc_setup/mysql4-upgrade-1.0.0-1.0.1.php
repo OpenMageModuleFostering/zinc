@@ -20,15 +20,3 @@ $this->getConnection()
    ->addColumn($installer->getTable('zinc_carebyzinc_order'),'warrenty_price',"double COMMENT 'WarrentyPrice'");
 $this->getConnection()
    ->addColumn($installer->getTable('zinc_carebyzinc_order'),'product_price',"double COMMENT 'ProductPrice'");
-   
-   
-$switch = new Mage_Core_Model_Config();
-
-$switch->saveConfig('carebyzinc/general/carebytitle', "Care by Zinc", 'default', 0);
-  
-   
-   
-   
-   
-   
-   

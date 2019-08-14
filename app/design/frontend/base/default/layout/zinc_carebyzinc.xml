@@ -1,332 +1,356 @@
 <?xml version="1.0"?>
 <layout version="0.1.0">
     <default>
-		<reference name="head">
-			<action method="addCss" ifconfig="carebyzinc/general/enabled"><stylesheet>carebyzinc/css/carebyzinc.css</stylesheet></action>
-		</reference>
-		 <reference name="minicart_content">
-		  <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-		  	<type>default</type>
-		  	<block>checkout/cart_item_renderer</block>
-		  	<template>carebyzinc/checkout/cart/minicart/default.phtml</template>
-		  </action>
-                    <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    	<type>simple</type>
-                    	<block>checkout/cart_item_renderer</block>
-                    	<template>carebyzinc/checkout/cart/minicart/default.phtml</template>
-                    </action>
-                    <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-	                    <type>grouped</type>
-	                    <block>checkout/cart_item_renderer_grouped</block>
-	                    <template>carebyzinc/checkout/cart/minicart/default.phtml</template>
-                    </action>
-                    <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    	<type>configurable</type>
-                    	<block>checkout/cart_item_renderer_configurable</block>
-                    	<template>carebyzinc/checkout/cart/minicart/default.phtml</template>
-                    </action>
-
-		 </reference>
+        <reference name="head">
+            <action method="addCss" ifconfig="carebyzinc/general/enabled">
+                <stylesheet>carebyzinc/css/carebyzinc.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="minicart_content">
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/cart/minicart/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>simple</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/cart/minicart/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>checkout/cart_item_renderer_grouped</block>
+                <template>carebyzinc/checkout/cart/minicart/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>
+                <template>carebyzinc/checkout/cart/minicart/default.phtml</template>
+            </action>
+        </reference>
     </default>
+    
     <carebyzinc_index_index>
         <reference name="content">
             <block type="carebyzinc/carebyzinc" name="carebyzinc" template="carebyzinc/carebyzinc.phtml" />
         </reference>
-    </carebyzinc_index_index>	
-	<catalog_product_view translate="label">
-		<reference name="head">
-		 	<action method="addJs" ifconfig="carebyzinc/general/enabled"><script>carebyzinc/product.js</script></action>
-		 	<action method="removeItem" ifconfig="carebyzinc/general/enabled"><type>js</type><name>varien/product.js</name></action>
-			<action method="addJs" ifconfig="carebyzinc/general/enabled">
-				<script>carebyzinc/jquery.colorbox.js</script>
-			</action>
-			<action method="addCss" ifconfig="carebyzinc/general/enabled">
-				<stylesheet>carebyzinc/css/colorbox.css</stylesheet>
-			</action>
-		</reference>
-			<reference name="product.info.extrahint">
-				<block type="carebyzinc/carebyzinc" name="carebyzinc" before="product.info.media">
-					<action method="setTemplate" ifconfig="carebyzinc/general/enabled"><template>carebyzinc/carebyzinc.phtml</template></action>
-				</block> 
-			</reference>
-	</catalog_product_view>
-	<checkout_cart_index>
-		<reference name="head">
-			<action method="addJs" ifconfig="carebyzinc/general/enabled">
-				<script>carebyzinc/jquery.colorbox.js</script>
-			</action>
-			<action method="addCss" ifconfig="carebyzinc/general/enabled">
-				<stylesheet>carebyzinc/css/colorbox.css</stylesheet>
-			</action>
-		</reference>
-		<reference name="checkout.cart">  
-			  <action method="setCartTemplate"  ifconfig="carebyzinc/general/enabled">
-				<value>carebyzinc/checkout/cart.phtml</value>
-			  </action>
-			  <action method="setEmptyTemplate" ifconfig="carebyzinc/general/enabled">
-				<value>checkout/cart/noItems.phtml</value>
-			  </action>   
-		  <action method="chooseTemplate"/>
-		  <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-			<type>virtual</type>
-			<block>checkout/cart_item_renderer</block>
-			<template>carebyzinc/checkout/cart/item/default.phtml</template>
-		  </action>	  
-		    <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-			<type>simple</type>
-			<block>checkout/cart_item_renderer</block>
-			<template>carebyzinc/checkout/cart/item/default.phtml</template>
-		  </action>
-		   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-			<type>configurable</type>
-			<block>checkout/cart_item_renderer_configurable</block>
-			<template>carebyzinc/checkout/cart/item/default.phtml</template>
-		  </action>		 
-		 </reference>
-	</checkout_cart_index>
+    </carebyzinc_index_index>
+    
+    <catalog_product_view translate="label">
+        <reference name="head">
+            <action method="addJs" ifconfig="carebyzinc/general/enabled">
+                <script>carebyzinc/product.js</script>
+            </action>
+            <action method="removeItem" ifconfig="carebyzinc/general/enabled">
+                <type>js</type>
+                <name>varien/product.js</name>
+            </action>
+            <action method="addJs" ifconfig="carebyzinc/general/enabled">
+                <script>carebyzinc/jquery.colorbox.js</script>
+            </action>
+            <action method="addCss" ifconfig="carebyzinc/general/enabled">
+                <stylesheet>carebyzinc/css/colorbox.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="product.info.extrahint">
+            <block type="carebyzinc/carebyzinc" name="carebyzinc" before="product.info.media">
+                <action method="setTemplate" ifconfig="carebyzinc/general/enabled">
+                    <template>carebyzinc/carebyzinc.phtml</template>
+                </action>
+            </block> 
+        </reference>
+    </catalog_product_view>
+    
+    <checkout_cart_index>
+        <reference name="head">
+            <action method="addJs" ifconfig="carebyzinc/general/enabled">
+                <script>carebyzinc/jquery.colorbox.js</script>
+            </action>
+            <action method="addCss" ifconfig="carebyzinc/general/enabled">
+                <stylesheet>carebyzinc/css/colorbox.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="checkout.cart">  
+            <action method="setCartTemplate"  ifconfig="carebyzinc/general/enabled">
+                <value>carebyzinc/checkout/cart.phtml</value>
+            </action>
+            <action method="setEmptyTemplate" ifconfig="carebyzinc/general/enabled">
+                <value>checkout/cart/noItems.phtml</value>
+            </action>   
+            <action method="chooseTemplate"/>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>virtual</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/cart/item/default.phtml</template>
+            </action>	  
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>simple</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/cart/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>
+                <template>carebyzinc/checkout/cart/item/default.phtml</template>
+            </action>		 
+        </reference>
+    </checkout_cart_index>
 	
-	 <checkout_onepage_index>
-	 <reference name="head">
-			<action method="addJs" ifconfig="carebyzinc/general/enabled">
-				<script>carebyzinc/jquery.colorbox.js</script>
-			</action>
-			<action method="addCss" ifconfig="carebyzinc/general/enabled">
-				<stylesheet>carebyzinc/css/colorbox.css</stylesheet>
-			</action>
-		</reference>
-	 </checkout_onepage_index>
-	 <checkout_onepage_review>
-		
-	 	<reference name="root">  
-			<action method="setTemplate" ifconfig="carebyzinc/general/enabled">
-					<template>carebyzinc/checkout/onepage/review/info.phtml</template>
-			</action>
-	 		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-	 		 	<type>default</type>
-	 		 	<block>checkout/cart_item_renderer</block>
-	 		 	<template>carebyzinc/checkout/onepage/review/item.phtml</template>
-	 		</action>
-			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-				<type>grouped</type>
-				<block>checkout/cart_item_renderer_grouped</block>
-				<template>carebyzinc/checkout/onepage/review/item.phtml</template>
-			</action>
-			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-				<type>configurable</type>
-				<block>checkout/cart_item_renderer_configurable</block>  
-				<template>carebyzinc/checkout/onepage/review/item.phtml</template>
-			</action>
-            
-	 	</reference>
+    <checkout_onepage_index>
+        <reference name="head">
+            <action method="addJs" ifconfig="carebyzinc/general/enabled">
+                <script>carebyzinc/jquery.colorbox.js</script>
+            </action>
+            <action method="addCss" ifconfig="carebyzinc/general/enabled">
+                <stylesheet>carebyzinc/css/colorbox.css</stylesheet>
+            </action>
+        </reference>
+    </checkout_onepage_index>
+    
+    <checkout_onepage_review>
+        <reference name="root">  
+            <action method="setTemplate" ifconfig="carebyzinc/general/enabled">
+                <template>carebyzinc/checkout/onepage/review/info.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/onepage/review/item.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>checkout/cart_item_renderer_grouped</block>
+                <template>carebyzinc/checkout/onepage/review/item.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>  
+                <template>carebyzinc/checkout/onepage/review/item.phtml</template>
+            </action>
+        </reference>
+    </checkout_onepage_review> 
+    
+    <checkout_onepage_success translate="label">
+        <reference name="head">
+            <action method="addJs" ifconfig="carebyzinc/general/enabled">
+                <script>carebyzinc/jquery.colorbox.js</script>
+            </action>
+            <action method="addCss" ifconfig="carebyzinc/general/enabled">
+                <stylesheet>carebyzinc/css/colorbox.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="content">
+            <reference name="checkout.success">
+                <action method="setTemplate"><template>carebyzinc/checkout/success.phtml</template></action>
+            </reference>
+        </reference>
+    </checkout_onepage_success>
+    
+    <checkout_multishipping_addresses>
+        <reference name="checkout_addresses">  
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>checkout/cart_item_renderer_grouped</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+        </reference>
+    </checkout_multishipping_addresses>
+    
+    <checkout_multishipping_shipping>
+        <reference name="checkout_shipping">  
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>checkout/cart_item_renderer_grouped</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>                
+        </reference>
+    </checkout_multishipping_shipping>
+    
+    <checkout_multishipping_overview>
+        <reference name="checkout_overview">  
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>checkout/cart_item_renderer</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>checkout/cart_item_renderer_grouped</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>
+                <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
+            </action>
+            <action method="addRowItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>checkout/cart_item_renderer_grouped</block>
+                <template>checkout/multishipping/overview/item.phtml</template>
+            </action>
+            <action method="addRowItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>configurable</type>
+                <block>checkout/cart_item_renderer_configurable</block>
+                <template>checkout/multishipping/overview/item.phtml</template>
+            </action>
+        </reference>
+    </checkout_multishipping_overview>
 	 
-	 </checkout_onepage_review> 
-	   <checkout_multishipping_addresses>
-        	  <reference name="checkout_addresses">  
-	 		 <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-		 		 <type>default</type>
-		 		 <block>checkout/cart_item_renderer</block>
-		 		 <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-	 		 </action>
-               		 <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-               		 	 <type>grouped</type>
-               			 <block>checkout/cart_item_renderer_grouped</block>
-               			 <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-               		</action>
-	                <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-	                	<type>configurable</type>
-	                	<block>checkout/cart_item_renderer_configurable</block>
-	                	<template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-	                </action>                
-            
-	 	</reference>
-    	</checkout_multishipping_addresses>
-    	 <checkout_multishipping_shipping>
-    	  	<reference name="checkout_shipping">  
-	 		 <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-		 		 <type>default</type>
-		 		 <block>checkout/cart_item_renderer</block>
-		 		 <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-	 		 </action>
-               		 <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-               		 	 <type>grouped</type>
-               			 <block>checkout/cart_item_renderer_grouped</block>
-               			 <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-               		</action>
-	                <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-	                	<type>configurable</type>
-	                	<block>checkout/cart_item_renderer_configurable</block>
-	                	<template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-	                </action>                
-            
-	 	</reference>
-    	 </checkout_multishipping_shipping>
-	 <checkout_multishipping_overview>
-		 <reference name="checkout_overview">  
-	 		 <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-		 		 <type>default</type>
-		 		 <block>checkout/cart_item_renderer</block>
-		 		 <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-	 		 </action>
-               		 <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-               		 	 <type>grouped</type>
-               			 <block>checkout/cart_item_renderer_grouped</block>
-               			 <template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-               		</action>
-	                <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-	                	<type>configurable</type>
-	                	<block>checkout/cart_item_renderer_configurable</block>
-	                	<template>carebyzinc/checkout/multishipping/item/default.phtml</template>
-	                </action>
-	                <action method="addRowItemRender" ifconfig="carebyzinc/general/enabled">
-	                	<type>grouped</type>
-	                	<block>checkout/cart_item_renderer_grouped</block>
-	                	<template>checkout/multishipping/overview/item.phtml</template>
-	                </action>
-	                <action method="addRowItemRender" ifconfig="carebyzinc/general/enabled">
-	               		 <type>configurable</type>
-	               		 <block>checkout/cart_item_renderer_configurable</block>
-	               		 <template>checkout/multishipping/overview/item.phtml</template>
-	               	</action>
-                
-            
-	 	</reference>
+    <sales_order_view>	
+        <reference name="order_items">  	 		 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_item_renderer_default</block>
+                <template>carebyzinc/sales/order/items/renderer/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_item_renderer_grouped</block>
+                <template>carebyzinc/sales/order/items/renderer/default.phtml</template>
+            </action>            
+        </reference> 
+    </sales_order_view> 
+    
+    <sales_order_print>
+        <reference name="sales.order.print">  	 		 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_item_renderer_default</block>
+                <template>carebyzinc/sales/order/items/renderer/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_item_renderer_grouped</block>
+                <template>carebyzinc/sales/order/items/renderer/default.phtml</template>
+            </action>            
+        </reference> 
+    </sales_order_print>
 	 
-	 </checkout_multishipping_overview>
-	 
-	<sales_order_view>	
-		 <reference name="order_items">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/items/renderer/default.phtml</template>
-                	   </action>
-                    	<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    		<type>grouped</type>
-                    		<block>sales/order_item_renderer_grouped</block>
-                    		<template>carebyzinc/sales/order/items/renderer/default.phtml</template>
-                    	</action>            
-	 	 </reference> 
-	</sales_order_view> 
-	<sales_order_print>
-		<reference name="sales.order.print">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/items/renderer/default.phtml</template>
-                	   </action>
-                    	<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    		<type>grouped</type>
-                    		<block>sales/order_item_renderer_grouped</block>
-                    		<template>carebyzinc/sales/order/items/renderer/default.phtml</template>
-                    	</action>            
-	 	 </reference> 
-	</sales_order_print>
-	 
-	 <sales_order_invoice>
-                   <reference name="invoice_items">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
-                	   </action>
-                    	<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    		<type>grouped</type>
-                    		<block>sales/order_item_renderer_grouped</block>
-                    		<template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
-                    	</action>            
-	 	 </reference>                    
-  	  </sales_order_invoice>
-	  <sales_order_printinvoice>
-	  <reference name="sales.order.print.invoice">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
-                	   </action>
-                    	<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    		<type>grouped</type>
-                    		<block>sales/order_item_renderer_grouped</block>
-                    		<template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
-                    	</action>            
-	 	 </reference>           
-	   </sales_order_printinvoice>
+    <sales_order_invoice>
+        <reference name="invoice_items">  	 		 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_item_renderer_default</block>
+                <template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_item_renderer_grouped</block>
+                <template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
+            </action>            
+        </reference>                    
+    </sales_order_invoice>
+    
+    <sales_order_printinvoice>
+        <reference name="sales.order.print.invoice">  	 		 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_item_renderer_default</block>
+                <template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_item_renderer_grouped</block>
+                <template>carebyzinc/sales/order/invoice/items/renderer/default.phtml</template>
+            </action>            
+        </reference>           
+    </sales_order_printinvoice>
 	  
-	    <sales_order_creditmemo>
-	     <reference name="creditmemo_items">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
-                	   </action>
-                    	<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    		<type>grouped</type>
-                    		<block>sales/order_item_renderer_grouped</block>
-                    		<template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
-                    	</action>         
+    <sales_order_creditmemo>
+        <reference name="creditmemo_items">  	 		 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_item_renderer_default</block>
+                <template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_item_renderer_grouped</block>
+                <template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
+            </action>         
                     	            
-	 	 </reference>           
-	   </sales_order_creditmemo>
+        </reference>           
+    </sales_order_creditmemo>
 	 
-	    <sales_order_printcreditmemo>
-	     <reference name="sales.order.print.creditmemo">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
-                	   </action>
-                    	<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                    		<type>grouped</type>
-                    		<block>sales/order_item_renderer_grouped</block>
-                    		<template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
-                    	</action>         
-	 	 </reference>           
-	   </sales_order_printcreditmemo>
-	   <sales_email_order_items>
-	   	  <reference name="items">  	 
-            		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-            			<type>default</type>
-            			<block>sales/order_email_items_order_default</block>
-            			<template>carebyzinc/email/order/items/order/default.phtml</template>
-            		</action>
-           		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-           			<type>grouped</type>
-           			<block>sales/order_email_items_order_grouped</block>
-           			<template>carebyzinc/email/order/items/order/default.phtml</template>
-           		</action>
-            	</reference>     
-   	 </sales_email_order_items>
+    <sales_order_printcreditmemo>
+        <reference name="sales.order.print.creditmemo">  	 		 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_item_renderer_default</block>
+                <template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_item_renderer_grouped</block>
+                <template>carebyzinc/sales/order/creditmemo/items/renderer/default.phtml</template>
+            </action>         
+        </reference>           
+    </sales_order_printcreditmemo>
+    
+    <sales_email_order_items>
+        <reference name="items">  	 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_email_items_order_default</block>
+                <template>carebyzinc/email/order/items/order/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_email_items_order_grouped</block>
+                <template>carebyzinc/email/order/items/order/default.phtml</template>
+            </action>
+        </reference>     
+    </sales_email_order_items>
 	
-	  <sales_email_order_invoice_items>
-	   	  <reference name="items">  	 
-            		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-            			<type>default</type>
-            			<block>sales/order_email_items_order_default</block>
-            			<template>carebyzinc/email/order/items/invoice/default.phtml</template>
-            		</action>
-           		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-           			<type>grouped</type>
-           			<block>sales/order_email_items_order_grouped</block>
-           			<template>carebyzinc/email/order/items/invoice/default.phtml</template>
-           		</action>
-            	</reference>     
-   	 </sales_email_order_invoice_items>
+    <sales_email_order_invoice_items>
+        <reference name="items">  	 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_email_items_order_default</block>
+                <template>carebyzinc/email/order/items/invoice/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_email_items_order_grouped</block>
+                <template>carebyzinc/email/order/items/invoice/default.phtml</template>
+            </action>
+        </reference>     
+    </sales_email_order_invoice_items>
    	 
-     <sales_email_order_creditmemo_items>
-   	  <reference name="items">  	 
-            		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-            			<type>default</type>
-            			<block>sales/order_email_items_order_default</block>
-            			<template>carebyzinc/email/order/items/creditmemo/default.phtml</template>
-            		</action>
-            		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-           			<type>grouped</type>
-           			<block>sales/order_email_items_order_grouped</block>
-           			<template>carebyzinc/email/order/items/creditmemo/default.phtml</template>
-           		</action>
+    <sales_email_order_creditmemo_items>
+        <reference name="items">  	 
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>default</type>
+                <block>sales/order_email_items_order_default</block>
+                <template>carebyzinc/email/order/items/creditmemo/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+                <type>grouped</type>
+                <block>sales/order_email_items_order_grouped</block>
+                <template>carebyzinc/email/order/items/creditmemo/default.phtml</template>
+            </action>
            		
-            	</reference>     
+        </reference>     
       
     </sales_email_order_creditmemo_items>
-
-	  
 </layout> 

@@ -53,6 +53,11 @@
 					<sort_order>20</sort_order>
 					<action>adminhtml/order</action>
 				</orders>
+                <settings module="carebyzinc">
+					<title>Settings</title>
+					<sort_order>30</sort_order>
+					<action>adminhtml/system_config/edit/section/carebyzinc</action>
+				</settings>
 			</children>
 		</carebyzinc>
 	</menu>
