@@ -64,13 +64,15 @@ class Zinc_Carebyzinc_Adminhtml_ProductController extends Mage_Adminhtml_Control
     	{
     		$post = $this->getRequest()->getPost();	
     		$id     = $this->getRequest()->getParam('id');
-		$model  = Mage::getModel('catalog/product')->load($id);
-		$model->setCarebyzincCategory($post['category']);
-		$model->setCarebyzincSubcategory($post['subcategory']);
-		$model->setCarebyzinc($post['carebyzinc']);
-		$model->save();
-		$this->_redirect('*/*/');
-		return;
+			$model  = Mage::getModel('catalog/product')->load($id);
+			$model->setCarebyzincCategory($post['category']);
+			$model->setCarebyzincSubcategory($post['subcategory']);
+			$model->setCarebyzincManufacturer($post['carebyzinc_manufacturer']);
+			$model->setCarebyzincModel($post['carebyzinc_model']);
+			$model->setCarebyzinc($post['carebyzinc']);
+			$model->save();
+			$this->_redirect('*/*/');
+			return;
     	
     	}
 	
@@ -81,29 +83,39 @@ class Zinc_Carebyzinc_Adminhtml_ProductController extends Mage_Adminhtml_Control
     public function massCarebyzincAction()
     {
         $productIds = (array)$this->getRequest()->getParam('product');
-        $carebyzinc     = (int)$this->getRequest()->getParam('zinc_carebyzinc');
-
-        try {
-            $this->_validateMassCarebyzinc($productIds, $carebyzinc);
-            Mage::getSingleton('catalog/product_action')
-                ->updateAttributes($productIds, array('carebyzinc' => $carebyzinc));
+        $carebyzinc = (int)$this->getRequest()->getParam('zinc_carebyzinc');
+        $this->_validateMassCarebyzinc($productIds, $carebyzinc);
+        if($carebyzinc == 1){
+			$this->loadLayout();
+			$this->_setActiveMenu('carebyzinc/products');
+			$this->getLayout()->getBlock('head')->setCanLoadExtJs(true);	
+			$block = $this->getLayout()->getBlock('carebyzinc_massaction');
+			$block->setProductIds(implode(',',$productIds));	
+			$this->renderLayout();
+		}else{
+			
+			try {
 				
-            $this->_getSession()->addSuccess(
-                $this->__('Total of %d record(s) have been updated.', count($productIds))
-            );
-        }
-        catch (Mage_Core_Model_Exception $e) {
-            $this->_getSession()->addError($e->getMessage());
-        } catch (Mage_Core_Exception $e) {
-            $this->_getSession()->addError($e->getMessage());
-        } catch (Exception $e) {
-            $this->_getSession()
-                ->addException($e, $this->__('An error occurred while updating the product(s)'));
-        }
-	if($this->getRequest()->getParam('pid'))
-      		 $this->_redirect('*/*/');
-      	else
-      		$this->_redirect('adminhtml/catalog_product/index');
+				Mage::getSingleton('catalog/product_action')
+					->updateAttributes($productIds, array('carebyzinc' => $carebyzinc));
+					
+				$this->_getSession()->addSuccess(
+					$this->__('Total of %d record(s) have been updated.', count($productIds))
+				);
+			}
+			catch (Mage_Core_Model_Exception $e) {
+				$this->_getSession()->addError($e->getMessage());
+			} catch (Mage_Core_Exception $e) {
+				$this->_getSession()->addError($e->getMessage());
+			} catch (Exception $e) {
+				$this->_getSession()
+					->addException($e, $this->__('An error occurred while updating the product(s)'));
+			}
+			if($this->getRequest()->getParam('pid'))
+				 $this->_redirect('*/*/');
+			else
+				$this->_redirect('adminhtml/catalog_product/index');
+		}
     }
     
      /**
@@ -115,44 +127,42 @@ class Zinc_Carebyzinc_Adminhtml_ProductController extends Mage_Adminhtml_Control
         $productIds = (array)$this->getRequest()->getParam('product');
         $category     = $this->getRequest()->getParam('carebyzinc_category');
         $subCat = 'Other';
-	if(!is_array($productIds)) {
-			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('carebyzinc')->__('Please select Product(s).'));
-	}else {
-	        try {
-	            $this->_validateMassCarebyzinc($productIds, $category);
-	            $subCategories = Mage::getModel('carebyzinc/carebyzinc')->getSubCategoryArray($category);
-	            foreach ($productIds as $product_id) {
-			$productModel = Mage::getModel('catalog/product')->load($product_id);
-			$name = $productModel->getName();			
-			foreach($subCategories as $subcat){
-				if (stripos($name, $subcat) !== false) {
-				     $subCat = $subcat;
-				     break;
+		if(!is_array($productIds)) {
+				Mage::getSingleton('adminhtml/session')->addError(Mage::helper('carebyzinc')->__('Please select Product(s).'));
+		}else{
+				try {
+					$this->_validateMassCarebyzinc($productIds, $category);
+					$subCategories = Mage::getModel('carebyzinc/carebyzinc')->getSubCategoryArray($category);
+					foreach ($productIds as $product_id) {
+						$productModel = Mage::getModel('catalog/product')->load($product_id);
+						$name = $productModel->getName();			
+						foreach($subCategories as $subcat){
+							if (stripos($name, $subcat) !== false) {
+								 $subCat = $subcat;
+								 break;
+							}
+						}				
+						$productModel->setCarebyzincCategory($category);
+						$productModel->setCarebyzincSubcategory($subCat);
+						$productModel->save();
+						
+					}						
+					$this->_getSession()->addSuccess(
+						$this->__('Total of %d record(s) have been updated.', count($productIds))
+					);
 				}
-			}			
-			$productModel->setCarebyzincCategory($category);
-			$productModel->setCarebyzincSubcategory($subCat);
-			$productModel->save();
-					
-		 }
-					
-	            $this->_getSession()->addSuccess(
-	                $this->__('Total of %d record(s) have been updated.', count($productIds))
-	            );
-	        }
-	        catch (Mage_Core_Model_Exception $e) {
-	            $this->_getSession()->addError($e->getMessage());
-	        } catch (Mage_Core_Exception $e) {
-	            $this->_getSession()->addError($e->getMessage());
-	        } catch (Exception $e) {
-	            $this->_getSession()
-	                ->addException($e, $this->__('An error occurred while updating the product(s)'));
-	        }
-        }
-	if($this->getRequest()->getParam('pid'))
-      		 $this->_redirect('*/*/');
-      	else
-      		$this->_redirect('adminhtml/catalog_product/index');
+				catch (Mage_Core_Model_Exception $e) {
+					$this->_getSession()->addError($e->getMessage());
+				} catch (Mage_Core_Exception $e) {
+					$this->_getSession()->addError($e->getMessage());
+				} catch (Exception $e) {
+					$this->_getSession()->addException($e, $this->__('An error occurred while updating the product(s)'));
+				}
+			}
+			if($this->getRequest()->getParam('pid'))
+				$this->_redirect('*/*/');
+			else
+				$this->_redirect('adminhtml/catalog_product/index');
     }       
 	
    public function _validateMassCarebyzinc(array $productIds, $carebyzinc)
@@ -161,14 +171,51 @@ class Zinc_Carebyzinc_Adminhtml_ProductController extends Mage_Adminhtml_Control
                 throw new Mage_Core_Exception(
                     $this->__('Some of the processed products have no SKU value defined. Please fill it prior to performing operations on these products.')
                 );
-      }
+		}
     }
     
     public function getSubcategoriesAction()
     {
-	$cid = $this->getRequest()->getParam('cat');
-	$subCategories = Mage::getModel('carebyzinc/carebyzinc')->getSubCategoryArray($cid);		
-	return $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($subCategories));
-      
+		$cid = $this->getRequest()->getParam('cat');
+		$subCategories = Mage::getModel('carebyzinc/carebyzinc')->getSubCategoryArray($cid);		
+		return $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($subCategories));
+		  
+    }
+     public function saveCarebyzincCategoryAction()
+    {
+		$post = $this->getRequest()->getPost();			
+		$subCategory = '';
+		if($post['carebyzinc_subcategory']){
+				$subCategory = $post['carebyzinc_subcategory'];
+		}
+		$category = $post['carebyzinc_category'];
+		$productIds = explode(',',$post['product_ids']);
+		$subCategories = Mage::getModel('carebyzinc/carebyzinc')->getSubCategoryArray($category);
+		foreach ($productIds as $product_id) {
+			$productModel = Mage::getModel('catalog/product')->load($product_id);
+			$name = $productModel->getName();
+			if(! $subCategory){						
+				foreach($subCategories as $subcat){
+					if (stripos($name, $subcat) !== false) {
+						 $subCategory = $subcat;
+						 break;
+					}
+				}
+			}
+			if(! $subCategory){	
+				$subCategory = 'Other';
+			}		
+			$productModel->setCarebyzincCategory($category);
+			$productModel->setCarebyzincSubcategory($subCategory);
+			$productModel->setCarebyzinc(1);
+			$productModel->setCarebyzincManufacturer($post['carebyzinc_manufacturer']);
+			$productModel->setCarebyzincModel($post['carebyzinc_model']);
+			$productModel->save();
+		}
+		$this->_getSession()->addSuccess(
+						$this->__('Total of %d record(s) have been updated.', count($productIds))
+					);
+		$this->_redirect('*/*/');
+		  
     }
 }

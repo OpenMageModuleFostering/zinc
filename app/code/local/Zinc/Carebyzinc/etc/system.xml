@@ -64,6 +64,15 @@
                             <show_in_store>1</show_in_store>
                             <frontend_type>text</frontend_type>
                         </defaultzip>
+                        <warranty_product>
+                            <label>Warranty Product Id</label>
+                            <sort_order>50</sort_order>
+                            <validate>required-entry validate-number</validate>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>text</frontend_type>
+                        </warranty_product>
                         
                           
                     </fields>
@@ -119,19 +128,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </url>
-			 <user_id>
-                            <label>User ID</label>
-			   <frontend_type>text</frontend_type>
-			    <depends>
-			    <testmode>
-			        <value>live</value>
-			    </testmode>
-			    </depends>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </user_id>
+			
                         <xuser_token>
                             <label>X-User-Token</label>
 			   <frontend_type>text</frontend_type>
@@ -145,19 +142,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>                            
                         </xuser_token>
-                         <test_user_id>
-                            <label>Test API User ID</label>
-			   <frontend_type>text</frontend_type>
-			    <depends>
-			    <testmode>
-			        <value>test</value>
-			    </testmode>
-			    </depends>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>                            
-                        </test_user_id>
+                        
                         <test_xuser_token>
                             <label>Test API X-User-Token</label>
 			   <frontend_type>text</frontend_type>

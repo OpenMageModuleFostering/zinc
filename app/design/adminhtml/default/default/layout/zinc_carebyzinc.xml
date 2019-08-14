@@ -1,5 +1,25 @@
 <?xml version="1.0"?>
-<layout version="0.1.0">
+<layout version="0.1.0">	
+	<adminhtml_catalog_product_edit>
+		<reference name="head">
+			<action method="addJs" ifconfig="carebyzinc/general/enabled">
+				<script>carebyzinc/jquery.min.js</script>
+			</action>
+			<action method="addJs" ifconfig="carebyzinc/general/enabled">
+				<script>carebyzinc/noConflict.js</script>
+			</action>
+		</reference>
+	</adminhtml_catalog_product_edit>
+	<adminhtml_catalog_product_action_attribute_edit>
+		<reference name="head">
+			<action method="addJs" ifconfig="carebyzinc/general/enabled">
+				<script>carebyzinc/jquery.min.js</script>
+			</action>
+			<action method="addJs" ifconfig="carebyzinc/general/enabled">
+				<script>carebyzinc/noConflict.js</script>
+			</action>
+		</reference>
+	</adminhtml_catalog_product_action_attribute_edit>
     <adminhtml_product_index>
         <reference name="content">
             <block type="carebyzinc/adminhtml_product" name="product"  />
@@ -29,7 +49,7 @@
 			</action> 
 		</reference>
 	</adminhtml_sales_order_view>
-	 <adminhtml_sales_order_invoice_new>
+	<adminhtml_sales_order_invoice_new>
 		 <reference name="order_items"> 
 			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
 				<type>default</type>
@@ -56,25 +76,7 @@
 				<template>carebyzinc/order/invoice/view/items/renderer/default.phtml</template>
 			</action> 
 		</reference>	
-    </adminhtml_sales_order_invoice_view>
-    <adminhtml_sales_order_shipment_new>
-		   <reference name="order_items"> 
-			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-				<type>default</type>
-				<block>adminhtml/sales_items_renderer_default</block>
-				<template>carebyzinc/order/shipment/create/items/renderer/default.phtml</template>
-			</action> 
-		</reference>      
-    </adminhtml_sales_order_shipment_new>
-     <adminhtml_sales_order_shipment_view>
-           <reference name="shipment_items"> 
-			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-				<type>default</type>
-				<block>adminhtml/sales_items_renderer_default</block>
-				<template>carebyzinc/order/shipment/view/items/renderer/default.phtml</template>
-			</action> 
-		</reference>        
-    </adminhtml_sales_order_shipment_view>
+    </adminhtml_sales_order_invoice_view>   
        <adminhtml_sales_order_creditmemo_new>       
         <reference name="order_items"> 
 			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
@@ -84,7 +86,7 @@
 			</action> 
 		</reference> 
     </adminhtml_sales_order_creditmemo_new>
-     <adminhtml_sales_order_creditmemo_updateqty>       
+    <adminhtml_sales_order_creditmemo_updateqty>       
         <reference name="order_items"> 
 			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
 				<type>default</type>
@@ -102,6 +104,10 @@
 			</action> 
 		</reference> 
     </adminhtml_sales_order_creditmemo_view>
-
+	<adminhtml_product_masscarebyzinc>
+        <reference name="content">
+			<block type="carebyzinc/adminhtml_product" name="carebyzinc_massaction" template="carebyzinc/carebyzinc_massaction.phtml" />
+		</reference>
+    </adminhtml_product_masscarebyzinc>
 
 </layout>

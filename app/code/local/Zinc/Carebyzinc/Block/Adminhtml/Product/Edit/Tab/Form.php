@@ -44,10 +44,11 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Edit_Tab_Form extends Mage_Adminht
       	   new Ajax.Request(reloadurl, {parameters: {  cat: selectElement},
            method: 'post',         
            onComplete: function(transport) {
-		var content = JSON.parse(transport.responseText); 
-		var i = 0;
+			var content = JSON.parse(transport.responseText); 
+			var i = 0;
+			document.getElementById('carebyzinc_subcategory').options.length = 0;
 		for (var key in content) {
-			document.getElementById('carebyzinc_subcategory').options[i] = new Option(content[key],content[key]);
+			document.getElementById('carebyzinc_subcategory').options[i] = new Option(content[key],key);
 			i++;
 		}
 					
@@ -78,6 +79,31 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Edit_Tab_Form extends Mage_Adminht
       
       
       }   
+      $fieldset->addField('carebyzinc_manufacturer', 'text', array(
+	          'label'     => Mage::helper('carebyzinc')->__('Manufacturer'),
+	          'class'     => 'required-entry  validate-length maximum-length-30 ',
+	          'required'  => true,
+	          'name'      => 'carebyzinc_manufacturer',
+	   )); 
+	  $fieldset->addField('carebyzinc_model', 'text', array(
+	          'label'     => Mage::helper('carebyzinc')->__('Model'),
+	          'class'     => 'required-entry  validate-length maximum-length-30 ',
+	          'required'  => true,
+	          'name'      => 'carebyzinc_model',
+	  )); 
+      
+     $this->setChild('form_after', $this->getLayout()
+    	   ->createBlock('adminhtml/widget_form_element_dependence')
+           ->addFieldMap('carebyzinc', 'carebyzinc')
+           ->addFieldMap('carebyzinc_category', 'carebyzinc_category')
+           ->addFieldMap('carebyzinc_manufacturer', 'carebyzinc_manufacturer')
+           ->addFieldMap('carebyzinc_model', 'carebyzinc_model')
+		   ->addFieldMap('carebyzinc_subcategory', 'carebyzinc_subcategory')
+           ->addFieldDependence('carebyzinc_category', 'carebyzinc', 1) 
+           ->addFieldDependence('carebyzinc_subcategory', 'carebyzinc', 1) 
+           ->addFieldDependence('carebyzinc_model', 'carebyzinc_category', array((string)'Bicycle',(string)'Electronics')) 
+           ->addFieldDependence('carebyzinc_manufacturer', 'carebyzinc_category', array((string)'Bicycle',(string)'Electronics')) 
+	  );
      
       if ( Mage::getSingleton('adminhtml/session')->getVendorData() )
       {

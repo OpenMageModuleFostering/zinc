@@ -10,9 +10,11 @@ class Zinc_Carebyzinc_Model_Entity_Subcategory extends Mage_Eav_Model_Entity_Att
 {
     public function getAllOptions()
     {
-	$this->_options = array();
-	if($category = Mage::registry('current_product')->getCarebyzincCategory())
-        	$this->_options = Mage::getModel('carebyzinc/carebyzinc')->getSubcategoryArray($category); 
+		$this->_options = array();
+		if(Mage::registry('current_product')){
+			if($category = Mage::registry('current_product')->getCarebyzincCategory())
+				$this->_options = Mage::getModel('carebyzinc/carebyzinc')->getSubcategoryArray($category); 
+        }
         return $this->_options;
     }
 }

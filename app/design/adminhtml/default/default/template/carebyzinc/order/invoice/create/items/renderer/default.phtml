@@ -34,10 +34,9 @@
                   <div class="product-cart-careby">
                       <p><strong><?php echo $this->__('Care By Zinc'); ?></strong><br />
                        <?php echo $carebyzincAry['description'] ?><br />
-                      <?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?><br />
-                      <span>Provider:</span> <?php echo $carebyzincAry['provider'] ?><br/>
- 		   <?php  $order = Mage::getModel('carebyzinc/order')->load($this->getItem()->getOrderItem()->getId(),'item_id');?>
-            		<span>Policy Key:</span> <?php echo  $order->getCarebyzincKey(); ?>
+                      <span><?php echo $this->__('Provider:');?></span> <?php echo $carebyzincAry['provider'] ?><br/>
+ 		   <?php  $order = Mage::getModel('carebyzinc/order')->load($this->getItem()->getOrderItem()->getCarebyzincParentid(),'item_id');?>
+            		<span><?php echo $this->__('Policy Key:');?></span> <?php echo  $order->getCarebyzincKey(); ?>
                       </p>
                   </div>
            <?php endif;?>

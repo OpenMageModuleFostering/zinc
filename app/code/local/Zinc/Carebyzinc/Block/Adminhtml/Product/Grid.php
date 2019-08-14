@@ -19,7 +19,7 @@ class Zinc_Carebyzinc_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_Block_
 	public function setCollection($collection)
 	{
 	
-		$collection->addFieldToFilter('price',array('gteq' => 500));
+		$collection->addAttributeToFilter('visibility',array('neq'=>1));
 		$collection->addAttributeToSelect('carebyzinc');
 		$collection->addAttributeToSelect('carebyzinc_category');
 		//$collection->addAttributeToSelect('carebyzinc_subcategory');

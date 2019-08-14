@@ -25,6 +25,7 @@
  */
 ?>
 <?php
+	$model = Mage::getModel('carebyzinc/carebyzinc');
     $_item = $this->getItem();
     $isVisibleProduct = $_item->getProduct()->isVisibleInSiteVisibility();
     $canApplyMsrp = Mage::helper('catalog')->canApplyMsrp($_item->getProduct(), Mage_Catalog_Model_Product_Attribute_Source_Msrp_Type::TYPE_BEFORE_ORDER_CONFIRM);
@@ -36,7 +37,16 @@
         <span class="product-image"><img src="<?php echo $this->getProductThumbnail()->resize(50, 50)->setWatermarkSize('30x10'); ?>" width="50" height="50" alt="<?php echo $this->escapeHtml($this->getProductName()) ?>" /></span>
     <?php endif; ?>
     <div class="product-details">
-        <p class="product-name"><?php if ($this->hasProductUrl()): ?><a href="<?php echo $this->getProductUrl() ?>"><?php endif; ?><?php echo $this->escapeHtml($this->getProductName()) ?><?php if ($this->hasProductUrl()): ?></a><?php endif; ?></p>
+        <p class="product-name">
+			<?php if ($this->hasProductUrl()): ?><a href="<?php echo $this->getProductUrl() ?>"><?php endif; ?>
+        <?php if($_item->getProductId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')): 			
+			$name = $model->getWarrentyName($_item->getCarebyzincParentid());
+				?>
+            <?php echo $this->escapeHtml($this->getProductName().$name) ?>
+         <?php else:?>
+         <?php echo $this->escapeHtml($this->getProductName()) ?>
+         <?php endif; ?>
+        <?php if ($this->hasProductUrl()): ?></a><?php endif; ?></p>
 
         <table class="info-wrapper">
             <tbody>
@@ -165,9 +175,7 @@
             <?php endif; ?>
         <?php endif ?>
 	<?php 
-		 $productModel = Mage::getModel('catalog/product')->load($this->getProduct()->getId()); 
 		 $_options =  $this->getOptionList();$i = 1;
-		 if($productModel->getCarebyzinc() == 1){
 		 	foreach ($_options as $_option) {
 		 		if($_option['label'] != 'carebyzinc')
 		 			$i++;
@@ -175,7 +183,7 @@
 		 		
 		 	}
 		 
-		 }
+		 
 	?>
         <?php if($i):
         
@@ -196,7 +204,7 @@
   <?php endif; ?>
                 <?php endforeach; ?>
                 <?php $careByZinc = $_item->getCarebyzincOption();?>
-                 <?php if($careByZinc && $productModel->getCarebyzinc() == 1): ?>
+                 <?php if($careByZinc): ?>
 
                   <dt><?php echo Mage::helper('carebyzinc')->getTitle() ?></dt>
                 <dd>
@@ -205,7 +213,6 @@
   <?php $carebyzincAry = (array) unserialize($careByZinc); ?>
         <div class="product-cart-careby">
             <p><?php echo $carebyzincAry['description'] ?></p>
-            <p class="care-price"><?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?></p>
          
         </div>
                 </dd>

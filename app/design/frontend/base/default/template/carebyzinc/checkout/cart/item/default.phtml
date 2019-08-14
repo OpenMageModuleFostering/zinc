@@ -1,28 +1,10 @@
 <?php
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE_AFL.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/afl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magento.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magento.com for more information.
- *
- * @category    design
- * @package     rwd_default
- * @copyright   Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
- * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- */
+ /**
+ * ZincPlatform
+ * @package    Zinc_Carebyzinc
+ * @copyright  Copyright (c) 2016-2017 Zinplatform (http://www.zincplatform.com/)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */ 
 ?>
 <?php
 $_item = $this->getItem();
@@ -31,24 +13,36 @@ $canApplyMsrp = Mage::helper('catalog')->canApplyMsrp($_item->getProduct(), Mage
 ?>
 <?php 
 $product = Mage::getModel('catalog/product')->load($_item->getProductId()); 
-$productType = $product->getTypeId();
-$flag = 0;
+$flag = 0;$warrantyflag = 0;
 $model = Mage::getModel('carebyzinc/carebyzinc');
-if($product->getCarebyzinc() != 1)
-	$carebyStatus = $model->getwarrantyStatus($_item->getId());
 $helper =  Mage::helper('carebyzinc');
+if(($product->getCarebyzinc() == 1) && ($product->getCarebyzincCategory() != NULL)){
+        $flag = 1;
+}
+if($_item->getCarebyzincVariantid())
+	$flag = 0;
+if($_item->getProductId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')){
+    $carebyStatus = $model->getwarrantyStatus($_item->getCarebyzincParentid(),$_item->getId()); 
+    $flag = 1;$warrantyflag = 1;
 
-if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE) || ($productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) )
-    	$flag = 1;
-
- ?>
+}elseif (($product->getCarebyzinc() == 1)  && (! $_item->getCarebyzincVariantid()) ){
+			$zip = $helper->getZipCode(); 
+			$product = Mage::getModel('catalog/product')->load($_item->getProductId()); 
+			$itemId =  $_item->getId();
+			$quoteDataSession = $model->getPriceQuoteinCart($product,  $itemId,$zip);
+			if((empty($quoteDataSession)) || (! is_array($quoteDataSession))){				
+					$flag = 0;
+			}   
+}    
+		
+?>
 
 <tr <?php if($flag) echo "style='border-bottom:0px'"; ?>>
-    <td class="product-cart-image" rowspan="2">
+    <td class="product-cart-image"<?php if($flag):?> rowspan="2"  <?php endif;?>>
         <?php if ($this->hasProductUrl()):?>
             <a href="<?php echo $this->getProductUrl() ?>" title="<?php echo $this->escapeHtml($this->getProductName()) ?>" class="product-image">
-        <?php endif;?>
-            <img src="<?php echo $this->getProductThumbnail()->resize(180); ?>" alt="<?php echo $this->escapeHtml($this->getProductName()) ?>" />
+        <?php endif;?>          
+            <img src="<?php echo $this->getProductThumbnail()->resize(180); ?>" alt="<?php echo $this->escapeHtml($this->getProductName()) ?>" <?php if ($warrantyflag):?> style="max-width: 100%;" <?php endif;?>/>
         <?php if ($this->hasProductUrl()):?>
             </a>
         <?php endif;?>
@@ -73,45 +67,51 @@ if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE) || ($productTy
         <a href="<?php echo $this->getDeleteUrl() ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Item')) ?>" class="btn-remove btn-remove2"><?php echo $this->__('Remove Item') ?></a>
 
         <h2 class="product-name">
-        <?php if ($this->hasProductUrl()):?>
-            <a href="<?php echo $this->getProductUrl() ?>"><?php echo $this->escapeHtml($this->getProductName()) ?></a>
-        <?php else: ?>
-            <?php echo $this->escapeHtml($this->getProductName()) ?>
-        <?php endif; ?>
+			<?php if ($this->hasProductUrl()):?>
+				<a href="<?php echo $this->getProductUrl() ?>"><?php echo $this->escapeHtml($this->getProductName()) ?></a>
+			<?php else: ?>
+				<?php if($_item->getProductId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')):             
+					$name = $model->getWarrentyName($_item->getCarebyzincParentid());
+				?>
+					<?php echo $this->escapeHtml($this->getProductName().$name) ?>
+				 <?php else:?>
+					<?php echo $this->escapeHtml($this->getProductName()) ?>
+				 <?php endif; ?>
+			<?php endif; ?>
         </h2>
 
         <div class="product-cart-sku">
             <span class="label"><?php echo $this->__('SKU'); ?>:</span> <?php echo $this->escapeHtml($_item->getSku()); ?>
         </div>
 
- <?php if ($_options = $this->getOptionList()):?>
+	<?php if ($_options = $this->getOptionList()):?>
         <dl class="item-options">
             <?php foreach ($_options as $_option) : ?>
-            <?php if($_option['label'] != 'carebyzinc'):?>
-            <?php $_formatedOptionValue = $this->getFormatedOptionValue($_option) ?>
-                <dt><?php echo $this->escapeHtml($_option['label']) ?></dt>
-                <dd<?php if (isset($_formatedOptionValue['full_view'])): ?> class="truncated"<?php endif; ?>><?php echo $_formatedOptionValue['value'] ?>
-                <?php if (isset($_formatedOptionValue['full_view'])): ?>
-                <div class="truncated_full_value">
-                    <dl class="item-options">
-                        <dt><?php echo $this->escapeHtml($_option['label']) ?></dt>
-                        <dd><?php echo $_formatedOptionValue['full_view'] ?></dd>
-                    </dl>
-                </div>
-                <?php endif; ?>
-            </dd>
-            <?php endif;?>
+				<?php if($_option['label'] != 'carebyzinc'):?>
+					<?php $_formatedOptionValue = $this->getFormatedOptionValue($_option) ?>
+					<dt><?php echo $this->escapeHtml($_option['label']) ?></dt>
+					<dd<?php if (isset($_formatedOptionValue['full_view'])): ?> class="truncated"<?php endif; ?>><?php echo $_formatedOptionValue['value'] ?>
+						<?php if (isset($_formatedOptionValue['full_view'])): ?>
+							<div class="truncated_full_value">
+								<dl class="item-options">
+									<dt><?php echo $this->escapeHtml($_option['label']) ?></dt>
+									<dd><?php echo $_formatedOptionValue['full_view'] ?></dd>
+								</dl>
+							</div>
+						<?php endif; ?>
+					</dd>
+				<?php endif;?>
             <?php endforeach; ?>
         </dl>
-        <?php endif;?>
+    <?php endif;?>
 
-        <?php if ($messages = $this->getMessages()): ?>
+    <?php if ($messages = $this->getMessages()): ?>
         <?php foreach ($messages as $message): ?>
             <p class="item-msg <?php echo $message['type'] ?>">
                 * <?php echo $this->escapeHtml($message['text']) ?>
             </p>
         <?php endforeach; ?>
-        <?php endif; ?>
+    <?php endif; ?>
 
         <?php $addInfoBlock = $this->getProductAdditionalInformationBlock(); ?>
         <?php if ($addInfoBlock): ?>
@@ -344,76 +344,64 @@ if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE) || ($productTy
         <a href="<?php echo $this->getDeleteUrl() ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Item')) ?>" class="btn-remove btn-remove2"><?php echo $this->__('Remove Item') ?></a>
     </td>
 </tr>
-<?php 
-	
-	if($flag):
-		$careByZinc = $_item->getCarebyzincOption();
- ?>
- <tr><td colspan="5">
-<?php if($careByZinc): ?>
 
+<?php $careByZinc = $_item->getCarebyzincOption();?>
+    <?php if($careByZinc): ?>
+		<tr>
+			<td colspan="5">
+				<?php $carebyzincAry = (array) unserialize($careByZinc); ?>
+				<div class="product-cart-careby">           
+					<p class="warranty_desc quotelabel"><?php echo $carebyzincAry['description'] ?></p>        
+				</div>
+			</td>
+		</tr>
 
-  <?php $carebyzincAry = (array) unserialize($careByZinc); ?>
-        <div class="product-cart-careby">
-           <a href="<?php echo $helper->getDeleteUrl($_item->getId()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Remove Warranty')) ?>" class="remove_warranty"><?php //echo $this->__('Remove Warranty') ?>
-           </a>
-            <p class="care-price"><?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?></p>
-            <p class="warranty_desc quotelabel"><?php echo $carebyzincAry['description'] ?></p>
-        
-        </div>
-        
-<?php else:?>
- <?php   
+    <?php else:?>
+		<?php
+		 if (($product->getCarebyzinc() == 1)  && (! $_item->getCarebyzincVariantid()) && ($_item->getProductId() != Mage::getStoreConfig('carebyzinc/general/warranty_product'))):
+			$zip = $helper->getZipCode(); 
+			$product = Mage::getModel('catalog/product')->load($_item->getProductId()); 
+			$itemId =  $_item->getId();
+			$quoteDataSession = $model->getPriceQuoteinCart($product,  $itemId,$zip);        
+		?>
+			<?php if(! empty($quoteDataSession)):?>
+				<?php if( is_array($quoteDataSession)):  
+					$quoteData = $quoteDataSession[$itemId];?>
+					 <tr><td colspan="5">
 
- if (($product->getCarebyzinc() == 1) && ($helper->validatePrice($_item->getPrice()) == 'true')):
- 	$zip = $helper->getZipCode();
- 
- ?>
+					<div class="product-box">
+						<div id="carebyzincCnt_<?php echo $_item->getId(); ?>" class="carebyzincCnt product-container" style="display:block;">
 
-      <div class="product-box">
-      <h1 class="product-title"><?php echo $helper->getTitle()?></h1>
-    <input type="text" name="zipcode_<?php echo $_item->getId(); ?>" id="zipcode_<?php echo $_item->getId(); ?>" value="<?php echo $zip ;?>" placeholder="Enter Zip code here" style="width:21%"/>
+							<ul class="product-list">
+							  <?php foreach($quoteData as $qitem): ?>
+								  <li>
+									  <div class="bx-l">
+										  <div class="squared input">
+											  <input type="radio" value="<?php echo $qitem['id']; ?>" id="carebyzinc_<?php echo $itemId.'_'.$qitem['id']; ?>" name="carebyzinc_option_<?php echo $itemId?>"  onclick="updateCareByZinc(<?php echo $itemId?>)"/>
+											  <label for="carebyzinc_<?php echo $itemId.'_'.$qitem['id']; ?>" ></label>
+										  </div>
+									  </div>
+									  <div class="bx-r">
+										  <h2 class="p-price"><?php echo Mage::helper('core')->currency($qitem['price_per_year']); ?></h2>
+										  <h3 class="p-name quotelabel"><?php echo $qitem['description']; ?></h3>
 
-        <button class="btn-zinc showCarebyzinc" id="showCarebyzinc_<?php echo $_item->getId(); ?>" onclick="showCarebyzinc(<?php echo $_item->getProductId(); ?>,<?php echo $_item->getId(); ?>); return false;"><?php echo $this->__('Get Quote')?><span id="care-loader_<?php echo $_item->getId(); ?>" class="care-loader"></span></button> 
-        
-        <div id="carebyzincCnt_<?php echo $_item->getId(); ?>" class="carebyzincCnt product-container" style="display:block;">
-        <?php
-        $product = Mage::getModel('catalog/product')->load($_item->getProductId()); 
-        $itemId =  $_item->getId();
-	$quoteDataSession = $model->getPriceQuoteinCart($product,  $itemId,$zip);	
-	
-?>
-<?php if(! empty($quoteDataSession)):?>
-<?php if( is_array($quoteDataSession)):  
-$quoteData = $quoteDataSession[$itemId];?>
-<ul class="product-list">
-  <?php foreach($quoteData as $qitem): ?>
-      <li>
-          <div class="bx-l">
-              <div class="squared input">
-                  <input type="radio" value="<?php echo $qitem['id']; ?>" id="carebyzinc_<?php echo $itemId.'_'.$qitem['id']; ?>" name="carebyzinc_option_<?php echo $itemId?>" />
-                  <label for="carebyzinc_<?php echo $itemId.'_'.$qitem['id']; ?>" ></label>
-              </div>
-          </div>
-          <div class="bx-r">
-              <h2 class="p-price"><?php echo Mage::helper('core')->currency($qitem['price_per_year']); ?></h2>
-              <h3 class="p-name quotelabel"><?php echo $qitem['description']; ?></h3>
+									  </div>
+								  </li>
+							  <?php endforeach; ?>
+							</ul>
+							<div class="validation-advice carebyzinc_validation" id="advice-required-entry_<?php echo $_item->getId(); ?>" style="display:none;"><?php echo $this->__('This is a required field.');?></div>
+							<span><?php echo $this->__('Based on zip:')?></span> <span class="updatezip"  onclick="openUpdatezip(<?php echo $itemId; ?>)"><strong><u><?php echo $zip ;?></u></strong></span>
+							<div id="updatezipside_<?php echo $_item->getId(); ?>" style="display:none;">
+								<input type="text" name="zipcode_<?php echo $_item->getId(); ?>" id="zipcode_<?php echo $_item->getId(); ?>" value="<?php echo $zip ;?>" placeholder="Enter Zip code here" style="width:21%"/>
 
-          </div>
-      </li>
-  <?php endforeach; ?>
-</ul>
-		<button type="button" title="Add" class="button" id="button-container_<?php echo $itemId?>" onclick="updateCareByZinc(<?php echo $itemId?>)"><span><span>Add</span></span></button>
-<?php else:
-echo $quoteDataSession;
-?>
-<?php endif; ?>
-<?php endif; ?>
-        
-        
-        </div>
-       </div>
+								<button class="btn-zinc showCarebyzinc" id="showCarebyzinc_<?php echo $_item->getId(); ?>" onclick="showCarebyzinc(<?php echo $_item->getProductId(); ?>,<?php echo $_item->getId(); ?>); return false;"><?php echo $this->__('Confirm')?><span id="care-loader_<?php echo $_item->getId(); ?>" class="care-loader"></span></button> 
+							
+							</div>
+						</div>
+					</div>
+					</td></tr>
+
+				<?php endif; ?>  
+			<?php endif;?>
+		<?php endif;?>
 	<?php endif;?>
-	<?php endif;?>
-</td></tr>
-<?php endif;?>

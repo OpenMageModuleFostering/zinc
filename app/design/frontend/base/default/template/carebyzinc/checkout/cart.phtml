@@ -196,9 +196,9 @@ function showCarebyzinc(pid,itemId){
 			});
 		}
 		else
-			alert('Enter a valid zipcode');
+			alert('Enter a valid zip code');
 	}else
-		alert('Enter a valid zipcode');
+		alert('Enter a valid zip code');
 	}
 	
 function updateCareByZinc(itemId)
@@ -213,10 +213,10 @@ function updateCareByZinc(itemId)
 	      c = i; 
 	   }
 	}
-	if (c == -1)
-		alert('Please select an option.');
-	else{	     
-	
+	if (c == -1){
+		document.getElementById('advice-required-entry_'+itemId).style.display="block";
+	}else{	     
+		document.getElementById('advice-required-entry_'+itemId).style.display="none";
 		var val = document.querySelector('input[name="'+name+'"]:checked').value;
 			new Ajax.Request(url, {
 				method: 'post',
@@ -238,5 +238,25 @@ function updateCareByZinc(itemId)
         jQuery.colorbox({iframe: true, href: elementURL, innerWidth: 645,fastIframe: false, innerHeight: 509,width:"70%"});
       });
   });
+ 
+function checkAction(item){
+	var radioButtons = $("input[type='radio'][name='"+ item.name +"']");
+	var radioStates = {};
+	 jQuery('input[name=' + item.name + ']').click(function() {
+		 var val = jQuery(this).val();  
+		jQuery(this).attr('checked', (radioStates[val] = !radioStates[val]));    
+		
+		jQuery.each(radioButtons, function(index, rd) {
+			if(rd.value !== val) {
+				radioStates[rd.value] = false; 
+			}
+		});
+    });
+
+}
+function openUpdatezip(itemId){
+	document.getElementById('updatezipside_'+itemId).style.display="block";
+}
+  
 //]]>	 
 </script>

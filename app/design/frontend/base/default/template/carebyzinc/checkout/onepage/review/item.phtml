@@ -26,7 +26,17 @@
 ?>
 <?php $_item = $this->getItem()?>
 <tr>
-    <td><h3 class="product-name"><?php echo $this->escapeHtml($this->getProductName()) ?></h3>
+    <td>
+		<h3 class="product-name">
+			<?php if($_item->getProductId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')): 			
+				$model = Mage::getModel('carebyzinc/carebyzinc');
+				$name = $model->getWarrentyName($_item->getCarebyzincParentid());
+			?>
+				<?php echo $this->escapeHtml($this->getProductName().$name) ?>
+			<?php else:?>
+				<?php echo $this->escapeHtml($this->getProductName()) ?>
+			<?php endif; ?>
+		</h3>
 
 <?php 
 	$careByZinc = $_item->getCarebyzincOption();
@@ -34,9 +44,7 @@
 <?php if($careByZinc): ?>
   <?php $carebyzincAry = (array) unserialize($careByZinc); ?>
         <div class="product-cart-careby">
-            <p><?php echo $carebyzincAry['description'] ?></p>
-            <p class="care-price"><?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?></p>
-            <p class="care-prov"><span>Provider:</span> <?php echo $carebyzincAry['provider'] ?></p>
+            <p class="quotelabel"><?php echo $carebyzincAry['description'] ?></p>
         </div>
     
     <?php endif; ?>

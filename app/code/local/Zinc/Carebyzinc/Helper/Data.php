@@ -36,13 +36,7 @@ class Zinc_Carebyzinc_Helper_Data extends Mage_Core_Helper_Abstract
   	 	return Mage::getUrl('carebyzinc/index/removeWarranty', array('id' => $itemId));
   	 
   	 }
-  	  public function validatePrice($price){
-  	 	if($price >=500)
-  	 		return true;
-  	 	else
-  	 		return false;
   	 
-  	 }
   	 public function callApi($url){
 		
 		$ch = curl_init($url);

@@ -68,39 +68,54 @@
 			  </action>   
 		  <action method="chooseTemplate"/>
 		  <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+			<type>virtual</type>
+			<block>checkout/cart_item_renderer</block>
+			<template>carebyzinc/checkout/cart/item/default.phtml</template>
+		  </action>	  
+		    <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
 			<type>simple</type>
 			<block>checkout/cart_item_renderer</block>
 			<template>carebyzinc/checkout/cart/item/default.phtml</template>
 		  </action>
-		  <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-			<type>grouped</type>
-			<block>checkout/cart_item_renderer_grouped</block>
-			<template>carebyzinc/checkout/cart/item/default.phtml</template>
-		  </action>
-		  <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+		   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
 			<type>configurable</type>
 			<block>checkout/cart_item_renderer_configurable</block>
 			<template>carebyzinc/checkout/cart/item/default.phtml</template>
-		  </action>		  
+		  </action>		 
 		 </reference>
 	</checkout_cart_index>
+	
+	 <checkout_onepage_index>
+	 <reference name="head">
+			<action method="addJs" ifconfig="carebyzinc/general/enabled">
+				<script>carebyzinc/jquery.colorbox.js</script>
+			</action>
+			<action method="addCss" ifconfig="carebyzinc/general/enabled">
+				<stylesheet>carebyzinc/css/colorbox.css</stylesheet>
+			</action>
+		</reference>
+	 </checkout_onepage_index>
 	 <checkout_onepage_review>
+		
 	 	<reference name="root">  
-	 		 <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+			<action method="setTemplate" ifconfig="carebyzinc/general/enabled">
+					<template>carebyzinc/checkout/onepage/review/info.phtml</template>
+			</action>
+	 		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
 	 		 	<type>default</type>
 	 		 	<block>checkout/cart_item_renderer</block>
 	 		 	<template>carebyzinc/checkout/onepage/review/item.phtml</template>
-	 		 </action>
-            		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-            			<type>grouped</type>
-            			<block>checkout/cart_item_renderer_grouped</block>
-            			<template>carebyzinc/checkout/onepage/review/item.phtml</template>
-            		</action>
-            		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-            			<type>configurable</type>
-            			<block>checkout/cart_item_renderer_configurable</block>  
-            			<template>carebyzinc/checkout/onepage/review/item.phtml</template>
-            		</action>
+	 		</action>
+			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+				<type>grouped</type>
+				<block>checkout/cart_item_renderer_grouped</block>
+				<template>carebyzinc/checkout/onepage/review/item.phtml</template>
+			</action>
+			<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
+				<type>configurable</type>
+				<block>checkout/cart_item_renderer_configurable</block>  
+				<template>carebyzinc/checkout/onepage/review/item.phtml</template>
+			</action>
             
 	 	</reference>
 	 
@@ -235,26 +250,7 @@
                     	</action>            
 	 	 </reference>           
 	   </sales_order_printinvoice>
-	   <sales_order_shipment>
-	     <reference name="shipment_items">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/shipment/items/renderer/default.phtml</template>
-                	   </action>
-                    	            
-	 	 </reference>           
-	   </sales_order_shipment>
-	   <sales_order_printshipment>
-	     <reference name="sales.order.print.shipment">  	 		 
-                	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-                	   	<type>default</type>
-                	   	<block>sales/order_item_renderer_default</block>
-                	   	<template>carebyzinc/sales/order/shipment/items/renderer/default.phtml</template>
-                	   </action>
-                    	            
-	 	 </reference>           
-	   </sales_order_printshipment>
+	  
 	    <sales_order_creditmemo>
 	     <reference name="creditmemo_items">  	 		 
                 	   <action method="addItemRender" ifconfig="carebyzinc/general/enabled">
@@ -314,17 +310,7 @@
            		</action>
             	</reference>     
    	 </sales_email_order_invoice_items>
-   	  <sales_email_order_shipment_items>
-   	  <reference name="items">  	 
-            		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">
-            			<type>default</type>
-            			<block>sales/order_email_items_order_default</block>
-            			<template>carebyzinc/email/order/items/shipment/default.phtml</template>
-            		</action>
-           		
-            	</reference>     
-      
-    </sales_email_order_shipment_items>
+   	 
      <sales_email_order_creditmemo_items>
    	  <reference name="items">  	 
             		<action method="addItemRender" ifconfig="carebyzinc/general/enabled">

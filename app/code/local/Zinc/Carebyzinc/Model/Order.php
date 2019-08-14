@@ -21,10 +21,9 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 	{
 		$data = array();
 		$currencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
-		$data['user_id'] =  $this->getUserId();
 		$data['customer'] = $this->getUserAddress($order);
 		$carebyItem = 0;$policyKeyArray = array();		
-		$orderItems = $order->getAllVisibleItems();
+		$orderItems = $order->getAllVisibleItems();		
 		$fromname = Mage::getStoreConfig('trans_email/ident_general/name'); 
 		$fromemail = Mage::getStoreConfig('trans_email/ident_general/email');
 		$translate  = Mage::getSingleton('core/translate');
@@ -37,11 +36,19 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 			$mode = 1;
 		else
 			$mode = 0;
+		$orderId = $order->getId();
 		foreach($orderItems as $item){
-			if($item->getCarebyzincOption()){
-				
-				$policyNo = '';			
-				$carebyzincAry = (array) unserialize($item->getCarebyzincOption()) ;
+			
+			if($item->getCarebyzincVariantid()){
+				$policyNo = '';	$carezincOption = '';	
+				$orderItemCollection = Mage::getModel('sales/order_item')->getCollection()
+							->addFieldToFilter('carebyzinc_parentid', $item->getQuoteItemId())
+							->addFieldToFilter('order_id', $orderId);
+							
+				foreach($orderItemCollection as $col){
+						$carezincOption = $col->getCarebyzincOption();				
+				}	
+				$carebyzincAry = (array) unserialize($carezincOption) ;
 				$product = Mage::getModel('catalog/product')->load($item->getProductId());				
 				$data['price_quote_id'] = $carebyzincAry['id'];				
 				$data['sku_id'] = $carebyzincAry['sku_id'];				
@@ -63,8 +70,7 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 				$careOrder->setOrderIncId($order->getIncrementId());
 				$careOrder->setItemId($item->getId());
 				$careOrder->setWarrentyPrice($carebyzincAry['price_per_year']);
-				$price = $item->getPrice() -  $carebyzincAry['price_per_year'];
-				$careOrder->setProductPrice($price);
+				$careOrder->setProductPrice($item->getPrice());
 				$careOrder->setCarebyzincProvider($carebyzincAry['provider']);
 				$name = $order->getCustomerFirstname(). ' '. $order->getCustomerLastname();
 				$careOrder->setCustomerName($name);
@@ -88,7 +94,7 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 				        $anyDate = $order->getCreatedAt();
 					$dateTimestamp = Mage::getModel('core/date')->timestamp(strtotime($anyDate));   
 					$date = date("Y-m-d",$dateTimestamp);
-					$subject = $this->getUserId().'_'.$policyKeyArray[$i].'_'.$storeObj->getFrontendName().'_'.$date;	  		
+					$subject = $policyKeyArray[$i].'_'.$storeObj->getFrontendName().'_'.$date;	  		
 				        $emailTemplate = Mage::getModel('core/email_template')->loadDefault('sales_email_order_template');           
 				        $emailTemplateVariables = array();
 				        $emailTemplateVariables['order'] = $order;
@@ -105,11 +111,7 @@ class Zinc_Carebyzinc_Model_Order extends Mage_Core_Model_Abstract
 		}
 	}
 	
-	private function getUserId()
-	{
-		$userId = Mage::getStoreConfig('carebyzinc/api/user_id');
-		return $userId;
-	}
+	
 	
 	public function getUserAddress($order)
 	{

@@ -24,7 +24,18 @@
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
-<h3 class="product-name"><a href="<?php echo $this->getProductUrl() ?>"><?php echo $this->escapeHtml($this->getProductName()) ?></a></h3>
+<h3 class="product-name">
+	<?php if($this->getItem()->getProductId() == Mage::getStoreConfig('carebyzinc/general/warranty_product')): 			
+		$model = Mage::getModel('carebyzinc/carebyzinc');
+		$name = $model->getWarrentyName($this->getItem()->getCarebyzincParentid());
+	?>
+		<?php echo $this->escapeHtml($this->getProductName().$name) ?>
+	<?php else:?>			
+		<a href="<?php echo $this->getProductUrl() ?>">
+			<?php echo $this->escapeHtml($this->getProductName()) ?>
+		</a>
+	<?php endif; ?>
+</h3>
 <?php 
 	 $careByZinc = $this->getItem()->getCarebyzincOption();
 ?>
@@ -33,7 +44,6 @@
         <div class="product-cart-careby">
             <p><?php echo $carebyzincAry['description'] ?></p>
             <p class="care-price"><?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?></p>
-            <p class="care-prov"><span>Provider:</span> <?php echo $carebyzincAry['provider'] ?></p>
         </div>
     
     <?php endif; ?>

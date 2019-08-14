@@ -31,8 +31,7 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 	  $price = $product->getFinalPrice();
 	  if($optionPrice)
 	  	$price += $optionPrice;
-	  $userId       = $this->getUserId();
-	  $data = array();  
+	  $data = array();	  
 	  $data['sku'] = array(
 	       'merchant_sku_id' => $product->getId(), 
 	       'sku_name' => $product->getName(), 
@@ -42,10 +41,18 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 	       'subcategory2' => '', 
 	       'description' => $product->getShortDescription(), 
 	       'price' => $price,
-	       'currency' => $currencyCode, 
-	       'user_id' => $userId
+	       'currency' => $currencyCode
 	      );
-	  
+	    $catArray = array('bicycle','electronics');	  
+	    if(in_array(strtolower($product->getCarebyzincCategory()),$catArray)){
+			
+		   if(($product->getCarebyzincModel()) && ($product->getCarebyzincManufacturer())){
+			   $additional = array('model'=>$product->getCarebyzincModel());
+			   $data['sku']['additional_info'] =  json_encode($additional);
+			   $data['sku']['brand'] = $product->getCarebyzincManufacturer();
+			}
+
+		}
 	  if(! $zip){
 		  $helper =  Mage::helper('carebyzinc');
 		  $zip = $helper->getZipCode();
@@ -65,7 +72,7 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 	  }else{
 	   	$response = $outData['response'];
 		$response = (array)json_decode($response, true); 
-	  	return $response['errors'];
+	  	return 'No Quotes Available';
 	  }
      
  	}
@@ -75,7 +82,6 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 	
 	  $currencyCode = Mage::app()->getStore()->getBaseCurrencyCode();
 	  $_item = Mage::getModel('sales/quote_item')->load($itemId);
-	  $userId       = $this->getUserId();
 	  $data = array();  
 	  $data['sku'] = array(
 	       'merchant_sku_id' => $product->getId(), 
@@ -86,9 +92,18 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 	       'subcategory2' => '', 
 	       'description' => $product->getShortDescription(), 
 	       'price' => $_item->getPrice(), 
-	       'currency' => $currencyCode, 
-	       'user_id' => $userId
+	       'currency' => $currencyCode
 	      );
+	    $catArray = array('bicycle','electronics');	  
+	    if(in_array(strtolower($product->getCarebyzincCategory()),$catArray)){
+			
+		   if(($product->getCarebyzincModel()) && ($product->getCarebyzincManufacturer())){
+			   $additional = array('model'=>$product->getCarebyzincModel());
+			   $data['sku']['additional_info'] =  json_encode($additional);
+			   $data['sku']['brand'] = $product->getCarebyzincManufacturer();
+			}
+
+		}
 	  if(! $zip){
 		  $helper =  Mage::helper('carebyzinc');
 		  $zip = $helper->getZipCode();
@@ -98,16 +113,23 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 	  if($outData['code'] == '200'){
 		  $response = $outData['response'];
 		  $quoteData = json_decode($response, true);
-		  $priceQuote = array();	 
-		  foreach($quoteData['price_quotes'] as $item):
-				$priceQuote[$itemId][$item['id']] = $item;
-		  endforeach;  
-		  Mage::getSingleton('core/session')->setCareByZincQuote($priceQuote);
-		  return $priceQuote;
+		  $priceQuote = array();
+		  if(! empty($quoteData['price_quotes'])){	
+			  $priceQuote = Mage::getSingleton('core/session')->getCareByZincQuote(); 
+			  foreach($quoteData['price_quotes'] as $item):
+					if($priceQuote[$itemId])
+						unset($priceQuote[$itemId]);
+					$priceQuote[$itemId][$item['id']] = $item;
+			  endforeach;  
+			  Mage::getSingleton('core/session')->setCareByZincQuote($priceQuote);
+			  return $priceQuote;
+			}else{
+				return 'No Quotes Available';
+			}
 	  }else{
 	   	$response = $outData['response'];
 		$response = (array)json_decode($response, true); 
-	  	return $response['errors'];
+	  	return 'No Quotes Available';//return $response['errors'];
 	  }
      
  	}
@@ -125,17 +147,8 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 			$protocol = 'http://'	;
 		$url = $protocol.$path.'/'.$action;
 		return $url;
-	}
+	}	
 	
-	public function getUserId()
-	{
-		
-		if((Mage::getStoreConfig('carebyzinc/api/testmode')) == 'live')
-			$userId = Mage::getStoreConfig('carebyzinc/api/user_id');
-		else
-			$userId = Mage::getStoreConfig('carebyzinc/api/test_user_id');
-		return $userId;
-	}
 	public function getToken()
 	{
 		
@@ -150,16 +163,15 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 		$outData = array();
 		$values = json_encode($data);
 		$url = $this->getApiUrl($action);
-		$uid =  $this->getUserId();
 		$token = $this->getToken();
 		$email = Mage::getStoreConfig('carebyzinc/api/xuser_email');
 		if(($action =='price_quotes/generate') || ($action == 'policies' ))
-			$header =  array( "Content-Type: application/json","uid:$uid","X-User-Token:$token","X-User-Email:$email","token-type:Bearer");
+			$header =  array( "Content-Type: application/json","X-User-Token:$token","X-User-Email:$email","token-type:Bearer");
 		elseif($action == 'token')
 			$header =  array( "Content-Type: application/json","X-User-Token:$token","X-User-Email:$email","token-type:Bearer");
 
 		else
-			$header =  array( "Content-Type: application/json","uid:$uid","token-type:Bearer");
+			$header =  array( "Content-Type: application/json","token-type:Bearer");
 		
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -177,45 +189,30 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 		return $outData;
 	}
 	
-	 public function getwarrantyStatus( $item_id )
-  	  {
+	public function getwarrantyStatus( $item_id,$warrentyitem )
+  	{
   	  	if($item_id < 0){
 	  		return '';
 		}
-  	  	$cart = Mage::getSingleton('checkout/cart');
-		$quoteItem = $cart->getQuote()->getItemById($item_id);
-	        $product = Mage::getModel('catalog/product')->load($quoteItem->getProductId()); 
-	        if(($product->getCarebyzinc() != 1) && ($quoteItem->getCarebyzincOption())){	 
-				 if ($additionalOption = $quoteItem->getOptionByCode('additional_options'))
-				 {
-					$additionalOptions = (array) unserialize($additionalOption->getValue());
-				 }
-				 $additionalOptionsArray = array();
-				 foreach($additionalOptions as $option){	 
-				 	if($option['label'] != 'carebyzinc')
-				 		 $additionalOptionsArray[] =  $option;
-				 }
-				 $quoteItem->setCarebyzincOption('');
+  	  	$cart = Mage::getModel('checkout/cart');
+		$quoteItem = $cart->getQuote()->getItemById($item_id);	
+		if($quoteItem){
+			$product = Mage::getModel('catalog/product')->load($quoteItem->getProductId()); 
+			if(($product->getCarebyzinc() != 1) && ($quoteItem->getCarebyzincVariantid())){	 
 				
-				 if(! empty($additionalOptionsArray)){
-					 $quoteItem->addOption(array(	'product_id' => $quoteItem->getProductId(),
-									'code' => 'additional_options',
-									'value' => serialize($additionalOptionsArray)
-								));
-				 }else{
-					 $quoteItem->getOptionByCode('additional_options')->delete();
-				 }
-				 $productPrice = $quoteItem->getProduct()->getFinalPrice();
-				 $quoteItem->setCustomPrice($productPrice);
-				 $quoteItem->setOriginalCustomPrice($productPrice);
-				 $quoteItem->getProduct()->setIsSuperMode(true);			
-				 $quoteItem->save();
-				 $cart->getQuote()->collectTotals()->save();
-			
-		 }
+				$quoteItem->setCarebyzincVariantid(NULL);		
+				$quoteItem->save();
+				$cartHelper = Mage::helper('checkout/cart');
+				$cartHelper->getCart()->removeItem($warrentyitem)->save();
+				$cart->getQuote()->collectTotals()->save();
+				
+			 }
+		}
 		 return true;
-    	}
-    	 public function getCategoryArray()
+    }
+    
+    
+    public function getCategoryArray()
 	{
 		
 		
@@ -231,7 +228,7 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 	{
 		if($category)
 			$dataArray = $this->getCategoryJson();		
-		$subcategory = array();
+		$subcategory = array(''=>'Please Select');
 		foreach($dataArray as $key => $value){
 			if($key == $category){
 				foreach($value as $val){
@@ -252,6 +249,17 @@ class Zinc_Carebyzinc_Model_Carebyzinc extends Mage_Core_Model_Abstract
 			$response = '{"Jewelry": ["Bracelet", "Necklace","Pendant","Brooch","Engagement Ring","Wedding Ring","Other Ring","Other"]}';
 		$dataArray = json_decode($response);
 		return $dataArray;
+	
+	}
+	
+	public function getWarrentyName($itemId)
+	{	
+	 	$name = '';
+	   	$orderItem = Mage::getModel('sales/quote_item')->load($itemId);
+		$product = Mage::getModel('catalog/product')->load($orderItem->getProductId());
+		if($product)
+			$name = ' for '. $product->getName();				
+		return $name;
 	
 	}
 	

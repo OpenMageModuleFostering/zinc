@@ -40,8 +40,7 @@
                   <div class="product-cart-careby">
                       <p><strong><?php echo $this->__('Care By Zinc'); ?></strong><br />
                        <?php echo $carebyzincAry['description'] ?><br />
-                      <?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?><br />
-                      <span>Provider:</span> <?php echo $carebyzincAry['provider'] ?></p>
+                      <span><?php echo $this->__('Provider:');?></span> <?php echo $carebyzincAry['provider'] ?></p>
                   </div>
            <?php endif;?>
         <?php if ($this->canDisplayContainer()): ?>

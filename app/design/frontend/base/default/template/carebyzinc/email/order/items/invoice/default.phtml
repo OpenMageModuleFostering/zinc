@@ -45,10 +45,8 @@
 			  <?php $carebyzincAry = (array) unserialize($careByZinc); ?>
 					<div class="product-cart-careby">
 						<p><?php echo $carebyzincAry['description'] ?></p>
-						<p class="care-price"><?php echo $this->helper('checkout')->formatPrice($carebyzincAry['price_per_year']) ?></p>
-						<p class="care-prov"><span>Provider:</span> <?php echo $carebyzincAry['provider'] ?></p>
-						 <?php  $order = Mage::getModel('carebyzinc/order')->load($_item->getOrderItem()->getId(),'item_id');?>
-						 <p><span>Policy Key:</span> <b><?php echo  $order->getCarebyzincKey(); ?></b></p>
+						 <?php  $order = Mage::getModel('carebyzinc/order')->load($_item->getOrderItem()->getCarebyzincParentid(),'item_id');?>
+						 <p><span><?php echo $this->__('Policy Key:');?></span> <b><?php echo  $order->getCarebyzincKey(); ?></b></p>
 					</div>    
 				<?php endif; ?>
             <?php $addInfoBlock = $this->getProductAdditionalInformationBlock(); ?>

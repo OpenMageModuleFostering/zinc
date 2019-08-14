@@ -9,14 +9,14 @@
 	$productType = $product->getTypeId();
 	$price = $product->getFinalPrice();
 	$helper =  Mage::helper('carebyzinc');
-        if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1) &&  ($helper->validatePrice($price) == 'true') && ($helper->checkQuoteVisibility())):
+        if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1) && ($helper->checkQuoteVisibility())):
              
 	      $zip = $helper->getZipCode(); ?>
 <div class="product-box">
 <h1 class="product-title"><?php echo $helper->getTitle()?></h1>
 <input type="text" name="zipcode" id="zipcode" value="<?php echo $zip ;?>" placeholder="Enter Zip code here" style="width:21%"/>
 <button class="btn-zinc showCarebyzinc" onclick="showCarebyzinc(); return false;">Get Quote <span id="care-loader" class="care-loader"></span></button>  
-<div id="carebyzincCnt" class="product-wrap"></div>
+<div id="carebyzincCnt"></div>
 </div>
 <script>
 //<![CDATA[
@@ -64,7 +64,7 @@ function showCarebyzinc(){
 			});
 		}
 		else
-			alert('Enter a valid zipcode');
+			alert('Enter a valid zip code');
 	}else
 		alert('Enter a valid zipcode');
 }
@@ -77,8 +77,21 @@ function showCarebyzinc(){
 		  $('carebyzincCnt').update('');	
 	});
 	
-	
+function checkAction(item){
+	var radioButtons = $("input[type='radio'][name='"+ item.name +"']");
+	var radioStates = {};
+	 jQuery('input[name=' + item.name + ']').click(function() {
+		 var val = jQuery(this).val();  
+		jQuery(this).attr('checked', (radioStates[val] = !radioStates[val]));    
+		
+		jQuery.each(radioButtons, function(index, rd) {
+			if(rd.value !== val) {
+				radioStates[rd.value] = false; 
+			}
+		});
+    });
 
+}	
 	
 //]]>	 
 </script>

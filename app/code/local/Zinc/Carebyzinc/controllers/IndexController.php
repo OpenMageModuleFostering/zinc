@@ -27,6 +27,7 @@ class Zinc_Carebyzinc_IndexController extends Mage_Core_Controller_Front_Action
 	  $response = '';
 	  $this->loadLayout();  
 	  $product = Mage::getModel('catalog/product')->load($product_id); 
+	  $basePrice = $product->getPrice();
 	  if(! empty($configOptionsArray)){
 		$attributes = $product->getTypeInstance(true)->getConfigurableAttributes($product);
 		$priceVal = 0;
@@ -58,6 +59,8 @@ class Zinc_Carebyzinc_IndexController extends Mage_Core_Controller_Front_Action
 	 	$response = is_array($response[$itemId])?$response[$itemId]:$response;
 	  	$quoteBlock->setTemplate('carebyzinc/options/cart.phtml');
 	  	$quoteBlock->setItemId($itemId); 
+	  	$quoteBlock->setZipData($zip);  
+	  	$quoteBlock->setPId($product->getId());
 	  	
 	  } else {
 	   	 $response = $model->getPriceQuote($product,$zip,$customoptionPrice);
@@ -70,80 +73,60 @@ class Zinc_Carebyzinc_IndexController extends Mage_Core_Controller_Front_Action
     }
    
     public function updatePriceQuoteinCartAction()
-    {
+    {		
+		
 		$carebyzincId = $this->getRequest()->getParam('carebyzinc');
 		$itemId = $this->getRequest()->getParam('itemId');
 		$priceQuoteSession = Mage::getSingleton('core/session')->getCareByZincQuote();
 		$priceQuote = $priceQuoteSession[$itemId];
-
+		$additionalOptions = array();
 		if($carebyzincItem = $priceQuote[$carebyzincId]){
-			$additionalOptions[] = array(
-							'label' => 'carebyzinc',
-							'value' => $carebyzincId,
-						);		
-				
+						
 			$cart = Mage::getSingleton('checkout/cart');
-			$item = $cart->getQuote()->getItemById($itemId);
-			$item->getProduct()->setIsSuperMode(true);
-			if($price = $carebyzincItem['price_per_year']){
-				$product = Mage::getModel('catalog/product')->load($item->getProductId());
-				$productPrice = $item->getProduct()->getFinalPrice();
-				$newPrice = $productPrice + $price;	
-				$item->setCarebyzincPrice($price);					
-				$item->setCustomPrice($newPrice);
-				$item->setOriginalCustomPrice($newPrice);
-			}
-			if ($additionalOption = $item->getOptionByCode('additional_options'))
-			{
-					$additionalOptions = (array) unserialize($additionalOption->getValue());
-			}
-			$item->setCarebyzincOption(serialize($priceQuote[$carebyzincId]));
-			$item->addOption(array(
-					'product_id' => $item->getProductId(),
+			$item = $cart->getQuote()->getItemById($itemId);			
+			$item->setCarebyzincVariantid($carebyzincId);
+			$item->save();
+			$warrantPrdctId = Mage::getStoreConfig('carebyzinc/general/warranty_product');
+			if($warrantPrdctId){				
+				
+				$req =  array('qty'=>1);
+				$careParentId = $itemId;				
+				$warrantyProduct = Mage::getModel('catalog/product')->load($warrantPrdctId);
+				$productPrice = $warrantyProduct->getPrice();			
+				
+				if($price = $carebyzincItem['price_per_year'])
+					$newPrice = $productPrice + $price;				
+				$quote = Mage::getSingleton('checkout/session')->getQuote();
+
+				$quoteItem = $quote->addProduct($warrantyProduct,1);
+				$quoteItem->setCustomPrice($newPrice);
+				$quoteItem->setOriginalCustomPrice($newPrice);
+				$quoteItem->setCarebyzincPrice($price);
+				$quoteItem->setCarebyzincParentid((int)$careParentId);
+				$quoteItem->getProduct()->setIsSuperMode(true);
+				
+				if( $item = $priceQuote[$carebyzincId]){												
+					$additionalOptions[] = array(
+									'label' =>  'carebyzinc',
+									'value' => $carebyzincId,
+								);
+					$quoteItem->setCarebyzincOption(serialize($priceQuote[$carebyzincId]));
+		
+				}
+				$quoteItem->addOption(array(
+					'product_id' => $quoteItem->getProductId(),
 					'code' => 'additional_options',
 					'value' => serialize($additionalOptions)
 				));
-			$item->save();
-			$cart->save();
+				
+				$quote->collectTotals()->save();
+
+			}
+			
 			Mage::getSingleton('core/session')->unsCareByZincQuote();	
 		}
 		echo 'success';
     }
-    public function removeWarrantyAction()
-    {
-	  $item_id = $this->getRequest()->getParam('id');
-	  if($item_id < 0){
-	  	return '';
-	  }
-	 $cart = Mage::getSingleton('checkout/cart');
-	 $quoteItem = $cart->getQuote()->getItemById($item_id);
-	 if ($additionalOption = $quoteItem->getOptionByCode('additional_options'))
-	 {
-		$additionalOptions = (array) unserialize($additionalOption->getValue());
-	 }
-	 $additionalOptionsArray = array();
-	 foreach($additionalOptions as $option){	 
-	 	if($option['label'] != 'carebyzinc')
-	 		 $additionalOptionsArray[] =  $option;
-	 }
-	 $quoteItem->setCarebyzincOption('');
-	 $productPrice = $quoteItem->getProduct()->getFinalPrice();
-	 if(! empty($additionalOptionsArray)){
-		 $quoteItem->addOption(array(	'product_id' => $quoteItem->getProductId(),
-						'code' => 'additional_options',
-						'value' => serialize($additionalOptionsArray)
-					));
-	 }else{
-	 	$quoteItem->getOptionByCode('additional_options')->delete();
-	 
-	 }
-	 $quoteItem->setCarebyzincPrice(0);		
-	 $quoteItem->setCustomPrice($productPrice);
-	 $quoteItem->setOriginalCustomPrice($productPrice);
-	 $quoteItem->getProduct()->setIsSuperMode(true);			
-	 $quoteItem->save();
-	 $cart->getQuote()->collectTotals()->save();
-	 $this->_redirect('checkout/cart/');
-    }
-   
+    
+  
 }

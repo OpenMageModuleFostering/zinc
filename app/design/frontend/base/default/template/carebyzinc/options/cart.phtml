@@ -1,5 +1,6 @@
 <?php $quoteData = $this->getQuoteData(); 
 	$itemId = $this->getItemId();
+	$pId = $this->getPId();
 ?>
 <?php if(! empty($quoteData)): ?>
 
@@ -9,7 +10,7 @@
       <li>
           <div class="bx-l">
               <div class="squared input">
-                  <input type="radio" value="<?php echo $item['id']; ?>" id="carebyzinc_<?php echo $itemId.'_'.$item['id']; ?>" name="carebyzinc_option_<?php echo $itemId?>" />
+                  <input type="radio" value="<?php echo $item['id']; ?>" id="carebyzinc_<?php echo $itemId.'_'.$item['id']; ?>" name="carebyzinc_option_<?php echo $itemId?>" onclick="updateCareByZinc(<?php echo $itemId?>)"/>
                   <label for="carebyzinc_<?php echo $itemId.'_'.$item['id']; ?>"></label>
               </div>
           </div>
@@ -20,12 +21,22 @@
       </li>
   <?php endforeach; ?>
 </ul>
-		<button type="button" title="Add" class="button" id="button-container_<?php echo $itemId?>" onclick="updateCareByZinc(<?php echo $itemId?>)"><span><span>Add</span></span></button>
+<?php $helper =  Mage::helper('carebyzinc');
+$zip = $this->getZipData()? $this->getZipData():$helper->getZipCode();?>
+
+	<div class="validation-advice carebyzinc_validation" id="advice-required-entry_<?php echo $itemId; ?>" style="display:none;"><?php echo $this->__('This is a required field.');?></div>
+	<span><?php echo $this->__('Based on zip:')?></span> <span class="updatezip" onclick="openUpdatezip(<?php echo $itemId; ?>)"><strong><u><?php echo $zip ;?></u></strong></span>
+	<div id="updatezipside_<?php echo $itemId; ?>" style="display:none;">
+			<input type="text" name="zipcode_<?php echo $itemId; ?>" id="zipcode_<?php echo $itemId; ?>" value="<?php echo $zip ;?>" placeholder="Enter Zip code here" style="width:21%"/>
+
+			<button class="btn-zinc showCarebyzinc" id="showCarebyzinc_<?php echo $itemId; ?>" onclick="showCarebyzinc(<?php echo $pId; ?>,<?php echo $itemId; ?>); return false;"><?php echo $this->__('Confirm')?><span id="care-loader_<?php echo $itemId; ?>" class="care-loader"></span></button> 
+        
+		</div>
 <?php else:
-echo $quoteData;
+//echo $quoteData;
 ?>
 <?php endif; ?>
 <?php else:
-echo 'No quotes available';
+//echo 'No quotes available';
 ?>
 <?php endif; ?>

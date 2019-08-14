@@ -1,12 +1,14 @@
 <?php $quoteData = $this->getQuoteData();?>
 <?php if(! empty($quoteData)): ?>
 <?php if( is_array($quoteData)): ?>
+<div class="product-wrap">
+
 <ul class="product-list">
   <?php foreach($quoteData as $item): ?>
       <li>
           <div class="bx-l">
               <div class="squared input">
-                  <input type="radio" value="<?php echo $item['id']; ?>" id="carebyzinc_<?php echo $item['id']; ?>" name="carebyzinc_option" />
+                  <input type="radio" value="<?php echo $item['id']; ?>" id="carebyzinc_<?php echo $item['id']; ?>" name="carebyzinc_option" onclick="checkAction(this)"/>
                   <label for="carebyzinc_<?php echo $item['id']; ?>"></label>
               </div>
           </div>
@@ -17,23 +19,30 @@
       </li>
   <?php endforeach; ?>
 </ul>
-
+</div>
 <script>
-jQuery.noConflict();
-  jQuery(document).ready(function() {
-    jQuery("a", ".quotelabel").click(
-      function(event) {
+//<![CDATA[
+ jQuery(".quotelabel").on("click","a", function(event){
         event.preventDefault();
         var elementURL = jQuery(this).attr("href");
         jQuery.colorbox({iframe: true, href: elementURL, innerWidth: 645,fastIframe: false, innerHeight: 509,width:"70%"});
       });
-  });
+  //]]> 
 </script>
-<?php else:
-echo $quoteData;
-?>
+<?php else:?>
+<div id="warning_div"><?php echo $quoteData;?></div>
+<script>
+//<![CDATA[
+hideDivData();
+function hideDivData(){
+  setTimeout(function() {
+    jQuery('#warning_div').fadeOut('fast');
+  }, 1000); 
+}
+//]]>   
+</script>
 <?php endif; ?>
-<?php else:
-echo 'No quotes available';
-?>
+<?php else:?>
+<p style="color:red;"><?php echo $this->__( 'No quotes available');?>
+</p>
 <?php endif; ?>

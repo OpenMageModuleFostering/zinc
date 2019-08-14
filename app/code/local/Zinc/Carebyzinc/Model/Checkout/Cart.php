@@ -17,14 +17,15 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart
     public function addProduct($productInfo, $requestInfo=null)
     {
         $product = $this->_getProduct($productInfo);
-        $request = $this->_getProductRequest($requestInfo);      
+        $request = $this->_getProductRequest($requestInfo); 
+           
         $productId = $product->getId();
         $flag = 0;$qty = 0;
         $productType = $product->getTypeId();
         if(($productType == Mage_Catalog_Model_Product_Type::TYPE_SIMPLE || $productType == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) && ($product->getCarebyzinc() == 1))
 		{
 			$flag = 1;
-			$qty = $request->getQty();
+			$qty = $request->getQty()?$request->getQty():1;
 			$request['qty'] = 1;
 		}
         if ($product->getStockItem()) {
@@ -36,63 +37,68 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart
                 $request->setQty($minimumQty);
             }
         }
-        if($flag){
-        $helper = Mage::helper('carebyzinc');
-			
+        if($flag){	
 		
 				if ($productId) {
 					try {
-						for($i= 0;$i<$qty;$i++){
-						$additionalOptions = array();
-						$product = Mage::getModel('catalog/product')
-								->setStoreId(Mage::app()->getStore()->getId())
-								->load($productId);	
-						$result = $this->getQuote()->addProduct($product, $request);	
-						if(is_object($result)){
-						$result = ( $result->getParentItem() ? $result->getParentItem() : $result );
-						$carebyzincId = $request->getCarebyzincOption();	
-						$priceQuote = Mage::getSingleton('core/session')->getCareQuote();
-						$carebyzincAry = $priceQuote[$carebyzincId];
-						$productPrice = $result->getProduct()->getFinalPrice();
-						$valid =  $helper->validatePrice($productPrice);
-						if($valid){
-						if($price = $carebyzincAry['price_per_year']){
-							$newPrice = $productPrice + $price;				
-							$result->setCustomPrice($newPrice);
-							$result->setOriginalCustomPrice($newPrice);
-							$result->setCarebyzincPrice($price);
-							$result->getProduct()->setIsSuperMode(true);
-						}				
-						if ($additionalOption = $result->getOptionByCode('additional_options'))
-						{
-							$additionalOptions = (array) unserialize($additionalOption->getValue());
-						}
-					
-						if( $item = $priceQuote[$carebyzincId]){
-							$additionalOptions[] = array(
-											'label' =>  'carebyzinc',
-											'value' => $carebyzincId,
-										);
-							$result->setCarebyzincOption(serialize($priceQuote[$carebyzincId]));
+							for($i= 0;$i<$qty;$i++){
 							
-						
-					    }else{
-							$additionalOptions[] = array(
-											'label' =>  'carebyzinc',
-											'value' => '',
-										);
-						
-							
-					
+								$additionalOptions = array();
+								$product = Mage::getModel('catalog/product')
+										->setStoreId(Mage::app()->getStore()->getId())
+										->load($productId);	
+								$result = $this->getQuote()->addProduct($product, $request);	
+								if(is_object($result)){
+									
+								$result = ( $result->getParentItem() ? $result->getParentItem() : $result );
+								
+								$carebyzincId = $request->getCarebyzincOption();	
+								$priceQuote = Mage::getSingleton('core/session')->getCareQuote();
+								$carebyzincAry = $priceQuote[$carebyzincId];
+								if(! empty($carebyzincAry)){
+									
+									$productPrice = $result->getProduct()->getFinalPrice();
+									
+										if($carebyzincId){
+											$result->setCarebyzincVariantid($carebyzincId);										
+											$warrantPrdctId = Mage::getStoreConfig('carebyzinc/general/warranty_product');
+											if($warrantPrdctId){
+												$req =  $this->_getProductRequest(array('product'=>$warrantPrdctId,'qty'=>1,'form_key'=>$request['form_key']));
+												
+												$this->getQuote()->save();
+												$careParentId = $result->getId();
+												
+												$warrantyProduct = Mage::getModel('catalog/product')->load($warrantPrdctId);
+												$productPrice = $warrantyProduct->getPrice();
+												if($price = $carebyzincAry['price_per_year'])
+													$newPrice = $productPrice + $price;		
+												$resultItem = $this->getQuote()->addProduct($warrantyProduct, $req);
+												$resultItem->setCustomPrice($newPrice);
+												$resultItem->setOriginalCustomPrice($newPrice);
+												$resultItem->setCarebyzincPrice($price);
+												$resultItem->setCarebyzincParentid((int)$careParentId);
+												$resultItem->getProduct()->setIsSuperMode(true);
+												if( $item = $priceQuote[$carebyzincId]){												
+													$additionalOptions[] = array(
+																	'label' =>  'carebyzinc',
+																	'value' => $carebyzincId,
+																);
+													$resultItem->setCarebyzincOption(serialize($priceQuote[$carebyzincId]));
+										
+												}
+												$resultItem->addOption(array(
+													'product_id' => $resultItem->getProductId(),
+													'code' => 'additional_options',
+													'value' => serialize($additionalOptions)
+												));
+												$this->getQuote()->save();
+											}
+										}
+										
+
+								}
+							}
 						}
-						$result->addOption(array(
-									'product_id' => $result->getProductId(),
-									'code' => 'additional_options',
-									'value' => serialize($additionalOptions)
-								));
-						$this->getQuote()->save();				
-					}
-					}}
 					} catch (Mage_Core_Exception $e) {
 						$this->getCheckoutSession()->setUseNotice(false);
 						$result = $e->getMessage();
@@ -119,6 +125,7 @@ class Zinc_Carebyzinc_Model_Checkout_Cart extends Mage_Checkout_Model_Cart
 
 				Mage::dispatchEvent('checkout_cart_product_add_after', array('quote_item' => $result, 'product' => $product));
 				$this->getCheckoutSession()->setLastAddedProductId($productId);
+				Mage::getSingleton('core/session')->unsCareQuote();	
 		}else{
 				if ($productId) {
 					try {
